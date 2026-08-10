@@ -13,12 +13,14 @@ const getRandomWords = (amount?: number) =>
   amount ? faker.word.words(amount) : faker.word.sample();
 
 const getRandomDates = (year: number) => {
-  const startDate = faker.date.between({from: new Date(year, 0, 1), to: new Date(year + 1, 0, 1)});
+  const startDate = faker.date.between({
+    from: new Date(year, 0, 1),
+    to: new Date(year + 1, 0, 1)
+  });
   const endDate = faker.date.between({
-      from: startDate,
-      to: new Date(year + Math.ceil(Math.random() * 4), 0, 1),
-    }
-  );
+    from: startDate,
+    to: new Date(year + Math.ceil(Math.random() * 4), 0, 1)
+  });
 
   return { startDate, endDate };
 };

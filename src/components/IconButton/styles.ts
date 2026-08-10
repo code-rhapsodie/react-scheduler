@@ -21,7 +21,7 @@ const variantStyles = (theme: Theme, variant: IconButtonVariant, disabled?: bool
       background: disabled ? theme.colors.disabled : theme.colors.accent,
       border: "1px solid transparent"
     }
-  }[variant]);
+  })[variant];
 
 export const ButtonWrapper: IStyledComponent<any, any> = styled.button<ButtonWrapperProps>`
   outline: none;

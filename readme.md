@@ -17,7 +17,8 @@
 <hr />
 
 ## About this fork
-``@code-rhapsodie/react-scheduler`` is a maintained fork of Bitnoise/react-scheduler, published by Code Rhapsodie with ongoing fixes and updates. Credit for the original library goes to the Bitnoise team.
+
+`@code-rhapsodie/react-scheduler` is a maintained fork of Bitnoise/react-scheduler, published by Code Rhapsodie with ongoing fixes and updates. Credit for the original library goes to the Bitnoise team.
 
 ### Installation
 
@@ -168,17 +169,18 @@ const mockedSchedulerData: SchedulerData = [
 
 ---
 
-| Property Name                        | Type                                                               | Default     | Description                                                                                                                                                            |
-|--------------------------------------|--------------------------------------------------------------------|-------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| zoom                                 | `0` or `1` or `2`                                                  | 0           | `0` - display grid divided into weeks `1` - display grid divided into days `2` - display grid divided into hours                                                       |
-| filterButtonState                    | `number`                                                           | 0           | `< 0` - hides filter button, `0` - state for when filters were not set, `> 0` - state for when some filters were set (allows to also handle `onClearFilterData` event) |
-| maxRecordsPerPage                    | `number`                                                           | 50          | number of items from `SchedulerData` visible per page                                                                                                                  |
-| lang                                 | `en`,  `es`, `lt`, `de`, `fr`, `it`, `pt-BR`, `he` , `ro`  or `pl` | en          | scheduler's language                                                                                                                                                   |
-| includeTakenHoursOnWeekendsInDayView | `boolean`                                                          | `false`     | show weekends as taken when given resource is longer than a week                                                                                                       |
-| showTooltip                          | `boolean`                                                          | `true`      | show tooltip when hovering over tiles                                                                                                                                  |
-| translations                         | `LocaleType[]`                                                     | `undefined` | option to add specific langs translations                                                                                                                              |
-| showThemeToggle                      | `boolean`                                                          | `false`     | show toggle button to switch between light/dark mode                                                                                                                   |
-| defaultTheme                         | `light` or `dark`                                                  | `light`     | scheduler's default theme                                                                                                                                              |
+| Property Name                        | Type                                                             | Default     | Description                                                                                                                                                            |
+| ------------------------------------ | ---------------------------------------------------------------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| zoom                                 | `0` or `1` or `2`                                                | 0           | `0` - display grid divided into weeks `1` - display grid divided into days `2` - display grid divided into hours                                                       |
+| filterButtonState                    | `number`                                                         | 0           | `< 0` - hides filter button, `0` - state for when filters were not set, `> 0` - state for when some filters were set (allows to also handle `onClearFilterData` event) |
+| maxRecordsPerPage                    | `number`                                                         | 50          | number of items from `SchedulerData` visible per page                                                                                                                  |
+| lang                                 | `en`, `es`, `lt`, `de`, `fr`, `it`, `pt-BR`, `he` , `ro` or `pl` | en          | scheduler's language                                                                                                                                                   |
+| includeTakenHoursOnWeekendsInDayView | `boolean`                                                        | `false`     | show weekends as taken when given resource is longer than a week                                                                                                       |
+| showTooltip                          | `boolean`                                                        | `true`      | show tooltip when hovering over tiles                                                                                                                                  |
+| translations                         | `LocaleType[]`                                                   | `undefined` | option to add specific langs translations                                                                                                                              |
+| showThemeToggle                      | `boolean`                                                        | `false`     | show toggle button to switch between light/dark mode                                                                                                                   |
+| defaultTheme                         | `light` or `dark`                                                | `light`     | scheduler's default theme                                                                                                                                              |
+
 #### Translation object example
 
 ```ts
@@ -254,33 +256,36 @@ const langs: LocaleType[] = [
 ##### Scheduler Data
 
 array of chart rows with shape of
-| Property Name | Type | Description |
-| -------- | --------------------- | -------------------------------- |
-| id | `string` | unique row id |
-| label | `SchedulerRowLabel` | row's label, `e.g person's name, surname, icon` |
-| data | `Array<ResourceItem>` | array of `resources` |
+
+| Property Name | Type                  | Description                                     |
+| ------------- | --------------------- | ----------------------------------------------- |
+| id            | `string`              | unique row id                                   |
+| label         | `SchedulerRowLabel`   | row's label, `e.g person's name, surname, icon` |
+| data          | `Array<ResourceItem>` | array of `resources`                            |
 
 ##### Left Colum Item Data
 
 data that is accessible as argument of `onItemClick` callback
-| Property Name | Type | Description |
-| -------- | --------------------- | -------------------------------- |
-| id | `string` | unique row id |
-| label | `SchedulerRowLabel` | row's label, `e.g person's name, surname, icon` |
+
+| Property Name | Type                | Description                                     |
+| ------------- | ------------------- | ----------------------------------------------- |
+| id            | `string`            | unique row id                                   |
+| label         | `SchedulerRowLabel` | row's label, `e.g person's name, surname, icon` |
 
 ##### Resource Item
 
 item that will be visible on the grid as tile and that will be accessible as argument of `onTileClick` event
-| Property Name | Type | Description |
-| ----------- | ----------------- | ------------------------------------------------------------------------------------------------------- |
-| id | `string` | unique resource id |
-| title | `string` | resource title that will be displayed on resource tile |
-| subtitle | `string (optional)` | resource subtitle that will be displayed on resource tile |
-| description | `string (optional)` | resource description that will be displayed on resource tile |
-| startDate | `Date` | date for calculating start position for resource |
-| endDate | `Date` | date for calculating end position for resource |
-| occupancy | `number` | number of seconds resource takes up for given row that will be visible on resource tooltip when hovered |
-| bgColor | `string (optional)` | tile color |
+
+| Property Name | Type                | Description                                                                                             |
+| ------------- | ------------------- | ------------------------------------------------------------------------------------------------------- |
+| id            | `string`            | unique resource id                                                                                      |
+| title         | `string`            | resource title that will be displayed on resource tile                                                  |
+| subtitle      | `string (optional)` | resource subtitle that will be displayed on resource tile                                               |
+| description   | `string (optional)` | resource description that will be displayed on resource tile                                            |
+| startDate     | `Date`              | date for calculating start position for resource                                                        |
+| endDate       | `Date`              | date for calculating end position for resource                                                          |
+| occupancy     | `number`            | number of seconds resource takes up for given row that will be visible on resource tooltip when hovered |
+| bgColor       | `string (optional)` | tile color                                                                                              |
 
 ### Troubleshooting
 
@@ -311,9 +316,12 @@ default export function SchedulerClient(props: SchedulerProps) {
 
 ```ts
 import dynamic from "next/dynamic";
-const Scheduler = dynamic(() => import("@code-rhapsodie/react-scheduler").then((mod) => mod.Scheduler), {
-  ssr: false
-});
+const Scheduler = dynamic(
+  () => import("@code-rhapsodie/react-scheduler").then((mod) => mod.Scheduler),
+  {
+    ssr: false
+  }
+);
 ```
 
 - How to customize Scheduler dimensions

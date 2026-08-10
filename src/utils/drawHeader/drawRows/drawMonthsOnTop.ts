@@ -4,7 +4,11 @@ import { Day } from "@/types/global";
 import { Theme } from "@/styles";
 import { drawRow } from "../../drawRow";
 
-export const drawMonthsOnTop = (ctx: CanvasRenderingContext2D, startDate: Day, theme: Theme): void => {
+export const drawMonthsOnTop = (
+  ctx: CanvasRenderingContext2D,
+  startDate: Day,
+  theme: Theme
+): void => {
   const yPos = 0;
   let xPos = 0;
   let width = 0;

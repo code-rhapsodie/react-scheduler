@@ -2,7 +2,9 @@ import styled, { IStyledComponent } from "styled-components";
 import { marginPaddingReset } from "@/styles";
 import { PaginationButtonProps, StyledPaginationButton } from "./types";
 
-export const StyledWrapper: IStyledComponent<any, any> = styled.div<Pick<PaginationButtonProps, "intent">>`
+export const StyledWrapper: IStyledComponent<any, any> = styled.div<
+  Pick<PaginationButtonProps, "intent">
+>`
   padding: 4px 11px 0;
   width: 100%;
   border-top: ${({ intent, theme }) =>

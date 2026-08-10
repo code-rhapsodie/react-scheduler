@@ -31,7 +31,8 @@ const LocaleProvider = ({ children, lang, translations }: LocaleProviderProps): 
     <localeContext.Provider
       value={{
         currentLocale
-      }}>
+      }}
+    >
       {children}
     </localeContext.Provider>
   );

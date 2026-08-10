@@ -2,20 +2,21 @@ import styled, { IStyledComponent } from "styled-components";
 import { boxHeight } from "@/constants";
 import { StyledLeftColumnItemWrapperProps, StyledTextProps } from "./types";
 
-export const StyledWrapper: IStyledComponent<any, any> = styled.div<StyledLeftColumnItemWrapperProps>`
-  display: flex;
-  align-items: ${({ rows }) => (rows > 1 ? "start" : "center")};
-  padding: 0.813rem 0 0.813rem 1rem;
-  width: 100%;
-  min-height: ${boxHeight}px;
-  height: calc(${boxHeight}px * ${({ rows }) => rows});
-  border-top: 1px solid ${({ theme }) => theme.colors.border};
-  transition: 0.5s ease;
-  cursor: ${({ clickable }) => (clickable ? "pointer" : "auto")};
-  &:hover {
-    background-color: ${({ theme }) => theme.colors.hover};
-  }
-`;
+export const StyledWrapper: IStyledComponent<any, any> =
+  styled.div<StyledLeftColumnItemWrapperProps>`
+    display: flex;
+    align-items: ${({ rows }) => (rows > 1 ? "start" : "center")};
+    padding: 0.813rem 0 0.813rem 1rem;
+    width: 100%;
+    min-height: ${boxHeight}px;
+    height: calc(${boxHeight}px * ${({ rows }) => rows});
+    border-top: 1px solid ${({ theme }) => theme.colors.border};
+    transition: 0.5s ease;
+    cursor: ${({ clickable }) => (clickable ? "pointer" : "auto")};
+    &:hover {
+      background-color: ${({ theme }) => theme.colors.hover};
+    }
+  `;
 
 export const StyledInnerWrapper: IStyledComponent<any, any> = styled.div`
   display: flex;

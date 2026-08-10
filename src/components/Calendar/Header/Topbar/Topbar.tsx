@@ -46,7 +46,8 @@ const Topbar: FC<TopbarProps> = ({ width, showThemeToggle, toggleTheme }) => {
             iconName="filter"
             width="16"
             height="16"
-            onClick={handleFilterData}>
+            onClick={handleFilterData}
+          >
             {topbar.filters}
             {!!filterButtonState && (
               <span onClick={handleClearFilters}>

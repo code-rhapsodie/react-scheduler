@@ -2,6 +2,7 @@ import { useTheme } from "styled-components";
 import { Icon } from "@/components";
 import { ButtonWrapper } from "./styles";
 import { IconButtonProps } from "./types";
+import { JSX } from "react";
 
 const IconButton = ({
   iconName,
@@ -14,7 +15,7 @@ const IconButton = ({
   isFullRounded,
   isDisabled,
   variant = "outlined"
-}: IconButtonProps) => {
+}: IconButtonProps): JSX.Element => {
   const { colors } = useTheme();
 
   return (

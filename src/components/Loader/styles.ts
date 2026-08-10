@@ -1,7 +1,7 @@
-import styled, { keyframes } from "styled-components";
+import styled, { IStyledComponent, keyframes } from "styled-components";
 import { StyledWrapperProps } from "./types";
 
-export const StyledWrapper = styled.div<StyledWrapperProps>`
+export const StyledWrapper: IStyledComponent<any, any> = styled.div<StyledWrapperProps>`
   width: 388px;
   height: 100%;
   position: absolute;
@@ -22,7 +22,7 @@ to{
     left: 100%;
 }`;
 
-export const StyledWalker = styled.div`
+export const StyledWalker: IStyledComponent<any, any> = styled.div`
   width: inherit;
   height: 100%;
   position: absolute;

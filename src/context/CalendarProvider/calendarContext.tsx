@@ -1,8 +1,8 @@
-import { createContext } from "react";
+import { Context, createContext } from "react";
 import dayjs from "dayjs";
 import { CalendarContextType } from "./types";
 
-export const calendarContext = createContext<CalendarContextType>({
+export const calendarContext: Context<CalendarContextType> = createContext<CalendarContextType>({
   handleGoNext: () => {},
   handleScrollNext: () => {},
   handleGoPrev: () => {},

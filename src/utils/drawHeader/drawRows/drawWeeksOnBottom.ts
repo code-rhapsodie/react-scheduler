@@ -19,7 +19,7 @@ export const drawWeeksOnBottom = (
   startDate: Day,
   weekLabel: string,
   theme: Theme
-) => {
+): void => {
   const dayNameYPos = headerHeight - headerDayHeight / 1.6;
   const dayNumYPos = headerHeight - headerDayHeight / 4.5;
   const yPos = headerMonthHeight + headerWeekHeight;

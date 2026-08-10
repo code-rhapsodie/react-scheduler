@@ -1,8 +1,9 @@
-import styled, { createGlobalStyle, type DefaultTheme } from "styled-components";
+import styled, { createGlobalStyle, type DefaultTheme, IStyledComponent } from "styled-components";
+import { NamedExoticComponent } from "react";
 
 export const prefixId = "reactSchedulerOutsideWrapper";
 
-export const GlobalStyle = createGlobalStyle`
+export const GlobalStyle: NamedExoticComponent = createGlobalStyle`
 
   #${prefixId} {
     font-family: 'Inter', sans-serif;
@@ -112,7 +113,7 @@ text-overflow: ellipsis;
 white-space: nowrap;
 `;
 
-export const StyledSchedulerFrame = styled.div`
+export const StyledSchedulerFrame: IStyledComponent<any, any> = styled.div`
   margin: 10rem 10rem;
   position: relative;
   width: 40vw;

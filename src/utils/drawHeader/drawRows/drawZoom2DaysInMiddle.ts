@@ -15,7 +15,7 @@ export const drawZoom2DaysInMiddle = (
   cols: number,
   startDate: Day,
   theme: Theme
-) => {
+): void => {
   const daysInRange = Math.floor(cols / hoursInDay) + 2;
 
   const width = hoursInDay * zoom2ColumnWidth;

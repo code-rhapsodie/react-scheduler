@@ -1,12 +1,12 @@
-import styled from "styled-components";
+import styled, { IStyledComponent } from "styled-components";
 import { leftColumnWidth } from "@/constants";
 
-export const StyledOuterWrapper = styled.div`
+export const StyledOuterWrapper: IStyledComponent<any, any> = styled.div`
   position: relative;
   display: flex;
 `;
 
-export const StyledInnerWrapper = styled.div`
+export const StyledInnerWrapper: IStyledComponent<any, any> = styled.div`
   position: relative;
   margin-left: ${leftColumnWidth};
   display: flex;
@@ -14,7 +14,7 @@ export const StyledInnerWrapper = styled.div`
   contain: paint;
 `;
 
-export const StyledEmptyBoxWrapper = styled.div<{ width: number }>`
+export const StyledEmptyBoxWrapper: IStyledComponent<any, any> = styled.div<{ width: number }>`
   width: calc(${({ width }) => width}px - ${leftColumnWidth}px);
   position: sticky;
   top: 0;

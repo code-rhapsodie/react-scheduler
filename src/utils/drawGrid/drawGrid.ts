@@ -12,7 +12,7 @@ export const drawGrid = (
   cols: number,
   parsedStartDate: Day,
   theme: Theme
-) => {
+): void => {
   ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
   const canvasWrapper = document.getElementById(canvasWrapperId);
   if (!canvasWrapper) return;

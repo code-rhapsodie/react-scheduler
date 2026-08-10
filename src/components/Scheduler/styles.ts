@@ -1,7 +1,7 @@
-import styled from "styled-components";
+import styled, { IStyledComponent } from "styled-components";
 import { StyledOutsideWrapperProps } from "./types";
 
-export const StyledOutsideWrapper = styled.div<StyledOutsideWrapperProps>`
+export const StyledOutsideWrapper: IStyledComponent<any, any> = styled.div<StyledOutsideWrapperProps>`
   position: absolute;
   top: 0;
   bottom: 0;
@@ -11,6 +11,6 @@ export const StyledOutsideWrapper = styled.div<StyledOutsideWrapperProps>`
   overflow-x: ${({ showScroll }) => (showScroll ? "scroll" : "hidden")};
   background-color: ${({ theme }) => theme.colors.gridBackground};
 `;
-export const StyledInnerWrapper = styled.div`
+export const StyledInnerWrapper: IStyledComponent<any, any> = styled.div`
   position: relative;
 `;

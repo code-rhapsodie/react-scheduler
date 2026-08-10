@@ -1,3 +1,4 @@
+import type { JSX } from "react";
 import { PaginatedSchedulerData, SchedulerProjectData } from "@/types/global";
 
 export type TilesProps = {

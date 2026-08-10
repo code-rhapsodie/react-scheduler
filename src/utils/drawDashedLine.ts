@@ -5,7 +5,7 @@ export const drawDashedLine = (
   startPos: number,
   lineLength: number,
   theme: Theme
-) => {
+): void => {
   ctx.setLineDash([5, 5]);
   ctx.strokeStyle = theme.colors.border;
   ctx.moveTo(startPos + 0.5, 0.5);

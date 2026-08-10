@@ -1,8 +1,8 @@
-import styled from "styled-components";
+import styled, { IStyledComponent } from "styled-components";
 import { leftColumnWidth } from "@/constants";
 import { StyledInputWrapperProps } from "./types";
 
-export const StyledWrapper = styled.div`
+export const StyledWrapper: IStyledComponent<any, any> = styled.div`
   min-width: ${leftColumnWidth + "px"};
   max-width: ${leftColumnWidth + "px"};
   min-height: 100vh;
@@ -13,7 +13,7 @@ export const StyledWrapper = styled.div`
   z-index: 2;
 `;
 
-export const StyledLeftColumnHeader = styled.div`
+export const StyledLeftColumnHeader: IStyledComponent<any, any> = styled.div`
   padding-bottom: 4px;
   position: sticky;
   top: 0;
@@ -26,7 +26,7 @@ export const StyledLeftColumnHeader = styled.div`
   z-index: 3;
 `;
 
-export const StyledInput = styled.input`
+export const StyledInput: IStyledComponent<any, any> = styled.input`
   height: 100%;
   width: calc(100% - 44px);
   background-color: transparent;
@@ -39,7 +39,7 @@ export const StyledInput = styled.input`
   }
 `;
 
-export const StyledInputWrapper = styled.div<StyledInputWrapperProps>`
+export const StyledInputWrapper: IStyledComponent<any, any> = styled.div<StyledInputWrapperProps>`
   margin-left: 10px;
   height: 36px;
   width: calc(100% - 20px); //20px = 10px margin each side

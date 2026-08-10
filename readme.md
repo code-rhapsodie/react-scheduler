@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="logo.svg" style="height: 60px" alt="@bitnoise/react-scheduler">
+  <img src="logo.svg" style="height: 60px" alt="@code-rhapsodie/react-scheduler/react-scheduler">
   <hr />
   <p align="center">
     ✨ <a href="https://scheduler.bitnoise.pl/">https://scheduler.bitnoise.pl/</a> ✨
@@ -9,31 +9,23 @@
   <div align="center">
     <a href="https://bit.ly/react_scheduler">Youtube Tutorial</a>
     <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
-    <a href="https://www.npmjs.com/package/@bitnoi.se/react-scheduler">npm</a>
+    <a href="https://www.npmjs.com/package/@code-rhapsodie/react-scheduler">npm</a>
     <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
-    <a href="https://github.com/Bitnoise/react-scheduler/issues/new">Report an issue</a>
+    <a href="https://github.com/code-rhapsodie/react-scheduler/issues/new">Report an issue</a>
   </div>
 </div>
 <hr />
 
-<div>
-  <h3 align="center">NEWSLETTER</h3>
-  <p>
-    If you want to stay updated with Scheduler updates and news from the technical world, sign up for our newsletter. We don't  spam (we send emails once a month), we don't run a sales newsletter, and we respect your time.
-  </p>
-  <p>
-  See for yourself: <a href="https://www.bitnoise.pl/newsletter">NEWSLETTER</a>
-  </p>
-</div>
-<hr/>
+## About this fork
+``@code-rhapsodie/react-scheduler`` is a maintained fork of Bitnoise/react-scheduler, published by Code Rhapsodie with ongoing fixes and updates. Credit for the original library goes to the Bitnoise team.
 
 ### Installation
 
 ```bash
 # yarn
-yarn add '@bitnoi.se/react-scheduler'
+yarn add '@code-rhapsodie/react-scheduler'
 # npm
-npm install '@bitnoi.se/react-scheduler'
+npm install '@code-rhapsodie/react-scheduler'
 ```
 
 ### Example usage
@@ -41,13 +33,13 @@ npm install '@bitnoi.se/react-scheduler'
 1. import required styles for scheduler
 
 ```ts
-import "@bitnoi.se/react-scheduler/dist/style.css";
+import "@code-rhapsodie/react-scheduler/dist/style.css";
 ```
 
 2. Import Scheduler component into your project
 
 ```ts
-import { Scheduler, SchedulerData } from "@bitnoi.se/react-scheduler";
+import { Scheduler, SchedulerData } from "@code-rhapsodie/react-scheduler";
 import dayjs from "dayjs";
 
 default export function Component() {
@@ -176,18 +168,17 @@ const mockedSchedulerData: SchedulerData = [
 
 ---
 
-| Property Name                        | Type               | Default     | Description                                                                                                                                                            |
-| ------------------------------------ | ------------------ | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| zoom                                 | `0` or `1` or `2`  | 0           | `0` - display grid divided into weeks `1` - display grid divided into days `2` - display grid divided into hours                                                       |
-| filterButtonState                    | `number`           | 0           | `< 0` - hides filter button, `0` - state for when filters were not set, `> 0` - state for when some filters were set (allows to also handle `onClearFilterData` event) |
-| maxRecordsPerPage                    | `number`           | 50          | number of items from `SchedulerData` visible per page                                                                                                                  |
-| lang                                 | `en`, `lt` or `pl` | en          | scheduler's language                                                                                                                                                   |
-| includeTakenHoursOnWeekendsInDayView | `boolean`          | `false`     | show weekends as taken when given resource is longer than a week                                                                                                       |
-| showTooltip                          | `boolean`          | `true`      | show tooltip when hovering over tiles                                                                                                                                  |
-| translations                         | `LocaleType[]`     | `undefined` | option to add specific langs translations                                                                                                                              |
-| showThemeToggle                      | `boolean`          | `false`     | show toggle button to switch between light/dark mode                                                                                                                   |
-| defaultTheme                         | `light` or `dark`  | `light`     | scheduler's default theme                                                                                                                                              |
-
+| Property Name                        | Type                                                               | Default     | Description                                                                                                                                                            |
+|--------------------------------------|--------------------------------------------------------------------|-------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| zoom                                 | `0` or `1` or `2`                                                  | 0           | `0` - display grid divided into weeks `1` - display grid divided into days `2` - display grid divided into hours                                                       |
+| filterButtonState                    | `number`                                                           | 0           | `< 0` - hides filter button, `0` - state for when filters were not set, `> 0` - state for when some filters were set (allows to also handle `onClearFilterData` event) |
+| maxRecordsPerPage                    | `number`                                                           | 50          | number of items from `SchedulerData` visible per page                                                                                                                  |
+| lang                                 | `en`,  `es`, `lt`, `de`, `fr`, `it`, `pt-BR`, `he` , `ro`  or `pl` | en          | scheduler's language                                                                                                                                                   |
+| includeTakenHoursOnWeekendsInDayView | `boolean`                                                          | `false`     | show weekends as taken when given resource is longer than a week                                                                                                       |
+| showTooltip                          | `boolean`                                                          | `true`      | show tooltip when hovering over tiles                                                                                                                                  |
+| translations                         | `LocaleType[]`                                                     | `undefined` | option to add specific langs translations                                                                                                                              |
+| showThemeToggle                      | `boolean`                                                          | `false`     | show toggle button to switch between light/dark mode                                                                                                                   |
+| defaultTheme                         | `light` or `dark`                                                  | `light`     | scheduler's default theme                                                                                                                                              |
 #### Translation object example
 
 ```ts
@@ -293,14 +284,14 @@ item that will be visible on the grid as tile and that will be accessible as arg
 
 ### Troubleshooting
 
-- For using Scheduler with RemixJS make sure to add `@bitnoi.se/react-scheduler` to `serverDependenciesToBundle` in `remix.config.js` like so:
+- For using Scheduler with RemixJS make sure to add `@code-rhapsodie/react-scheduler` to `serverDependenciesToBundle` in `remix.config.js` like so:
 
 ```js
 // remix.config.js
 /** @type  {import('@remix-run/dev').AppConfig} */
 module.exports = {
 	// ...
-	serverDependenciesToBundle: [..., "@bitnoi.se/react-scheduler"],
+	serverDependenciesToBundle: [..., "@code-rhapsodie/react-scheduler"],
 };
 ```
 
@@ -308,7 +299,7 @@ module.exports = {
 
 ```ts
 "use client"
-import { Scheduler, SchedulerProps } from "@bitnoi.se/react-scheduler";
+import { Scheduler, SchedulerProps } from "@code-rhapsodie/react-scheduler";
 
 default export function SchedulerClient(props: SchedulerProps) {
 	return <Scheduler {...props} />;
@@ -320,7 +311,7 @@ default export function SchedulerClient(props: SchedulerProps) {
 
 ```ts
 import dynamic from "next/dynamic";
-const Scheduler = dynamic(() => import("@bitnoi.se/react-scheduler").then((mod) => mod.Scheduler), {
+const Scheduler = dynamic(() => import("@code-rhapsodie/react-scheduler").then((mod) => mod.Scheduler), {
   ssr: false
 });
 ```

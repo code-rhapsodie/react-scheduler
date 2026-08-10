@@ -15,7 +15,7 @@ export const drawZoom2HoursOnBottom = (
   cols: number,
   startDate: Day,
   theme: Theme
-) => {
+): void => {
   let xPos = 0;
   const yPos = zoom2HeaderTopRowHeight + zoom2HeaderMiddleRowHeight;
 

@@ -9,7 +9,7 @@ export const drawCell = (
   isBusinessDay: boolean,
   isCurrentDay: boolean,
   theme: Theme
-) => {
+): void => {
   ctx.strokeStyle = theme.colors.border;
   if (isCurrentDay) {
     ctx.fillStyle = theme.colors.secondary;

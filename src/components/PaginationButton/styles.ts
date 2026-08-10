@@ -1,15 +1,15 @@
-import styled from "styled-components";
+import styled, { IStyledComponent } from "styled-components";
 import { marginPaddingReset } from "@/styles";
 import { PaginationButtonProps, StyledPaginationButton } from "./types";
 
-export const StyledWrapper = styled.div<Pick<PaginationButtonProps, "intent">>`
+export const StyledWrapper: IStyledComponent<any, any> = styled.div<Pick<PaginationButtonProps, "intent">>`
   padding: 4px 11px 0;
   width: 100%;
   border-top: ${({ intent, theme }) =>
     intent === "next" ? `1px solid ${theme.colors.border}` : "none"};
 `;
 
-export const StyledButton = styled.button<StyledPaginationButton>`
+export const StyledButton: IStyledComponent<any, any> = styled.button<StyledPaginationButton>`
   margin-top: 0px;
   padding: 0;
   width: 100%;
@@ -31,7 +31,7 @@ export const StyledButton = styled.button<StyledPaginationButton>`
   }
 `;
 
-export const StyledIconWrapper = styled.div`
+export const StyledIconWrapper: IStyledComponent<any, any> = styled.div`
   position: absolute;
   max-height: 16px;
   margin: 0 4px 0 10px;
@@ -40,7 +40,7 @@ export const StyledIconWrapper = styled.div`
   justify-content: center;
 `;
 
-export const StyledText = styled.p`
+export const StyledText: IStyledComponent<any, any> = styled.p`
   ${marginPaddingReset}
   margin-left: 14px;
   width: 100%;

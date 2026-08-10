@@ -1,8 +1,8 @@
-import styled from "styled-components";
+import styled, { IStyledComponent } from "styled-components";
 import { boxHeight } from "@/constants";
 import { StyledLeftColumnItemWrapperProps, StyledTextProps } from "./types";
 
-export const StyledWrapper = styled.div<StyledLeftColumnItemWrapperProps>`
+export const StyledWrapper: IStyledComponent<any, any> = styled.div<StyledLeftColumnItemWrapperProps>`
   display: flex;
   align-items: ${({ rows }) => (rows > 1 ? "start" : "center")};
   padding: 0.813rem 0 0.813rem 1rem;
@@ -17,12 +17,12 @@ export const StyledWrapper = styled.div<StyledLeftColumnItemWrapperProps>`
   }
 `;
 
-export const StyledInnerWrapper = styled.div`
+export const StyledInnerWrapper: IStyledComponent<any, any> = styled.div`
   display: flex;
   align-items: center;
 `;
 
-export const StyledImageWrapper = styled.div`
+export const StyledImageWrapper: IStyledComponent<any, any> = styled.div`
   margin-right: 0.5rem;
   width: 1.5rem;
   height: 1.5rem;
@@ -30,17 +30,17 @@ export const StyledImageWrapper = styled.div`
   overflow: hidden;
   flex-shrink: 0;
 `;
-export const StyledImage = styled.img`
+export const StyledImage: IStyledComponent<any, any> = styled.img`
   object-fit: cover;
   height: 100%;
   width: 100%;
 `;
-export const StyledTextWrapper = styled.div`
+export const StyledTextWrapper: IStyledComponent<any, any> = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1 0 0;
 `;
-export const StyledText = styled.p<StyledTextProps>`
+export const StyledText: IStyledComponent<any, any> = styled.p<StyledTextProps>`
   margin: 0;
   padding: 0;
   font-size: ${({ isMain }) => (isMain ? 0.75 + "rem" : 0.625 + "rem")};
@@ -53,4 +53,5 @@ export const StyledText = styled.p<StyledTextProps>`
   width: 100%;
   white-space: nowrap;
   overflow: hidden;
+  text-align: left;
 `;

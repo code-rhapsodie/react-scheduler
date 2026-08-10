@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { IStyledComponent } from "styled-components";
 import { leftColumnWidth } from "@/constants";
 import { TopbarProps } from "./types";
 
@@ -11,7 +11,7 @@ const resetBtnStyles = `
   margin: 0
 `;
 
-export const Wrapper = styled.div<TopbarProps>`
+export const Wrapper: IStyledComponent<any, any> = styled.div<TopbarProps>`
   width: calc(${({ width }) => width}px - ${leftColumnWidth}px);
   position: sticky;
   top: 0;
@@ -25,12 +25,12 @@ export const Wrapper = styled.div<TopbarProps>`
   z-index: 3;
 `;
 
-export const NavigationWrapper = styled.div`
+export const NavigationWrapper: IStyledComponent<any, any> = styled.div`
   display: flex;
   gap: 1.875rem;
 `;
 
-export const NavBtn = styled.button`
+export const NavBtn: IStyledComponent<any, any> = styled.button`
   ${resetBtnStyles};
   display: flex;
   align-items: center;
@@ -43,7 +43,7 @@ export const NavBtn = styled.button`
   }
 `;
 
-export const Today = styled.button`
+export const Today: IStyledComponent<any, any> = styled.button`
   ${resetBtnStyles};
   position: relative;
   font-weight: 600;
@@ -67,7 +67,7 @@ export const Today = styled.button`
   }
 `;
 
-export const Zoom = styled.div`
+export const Zoom: IStyledComponent<any, any> = styled.div`
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -76,11 +76,11 @@ export const Zoom = styled.div`
   color: ${({ theme }) => theme.colors.textPrimary};
 `;
 
-export const Filters = styled.div`
+export const Filters: IStyledComponent<any, any> = styled.div`
   display: flex;
 `;
 
-export const OptionsContainer = styled.div`
+export const OptionsContainer: IStyledComponent<any, any> = styled.div`
   display: flex;
   align-items: "center";
   gap: 1.25rem;

@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { JSX, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import dayjs from "dayjs";
 import weekOfYear from "dayjs/plugin/weekOfYear";
 import dayOfYear from "dayjs/plugin/dayOfYear";
@@ -20,12 +20,21 @@ import {
 } from "@/constants";
 import { getCanvasWidth } from "@/utils/getCanvasWidth";
 import { calendarContext } from "./calendarContext";
-import { CalendarProviderProps } from "./types";
+import { CalendarContextType, CalendarProviderProps } from "./types";
+import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
+import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
+import isoWeeksInYear from "dayjs/plugin/isoWeeksInYear";
+import isLeapYear from "dayjs/plugin/isLeapYear";
+
 dayjs.extend(weekOfYear);
 dayjs.extend(dayOfYear);
 dayjs.extend(isoWeek);
 dayjs.extend(isBetween);
 dayjs.extend(duration);
+dayjs.extend(isSameOrBefore);
+dayjs.extend(isSameOrAfter);
+dayjs.extend(isoWeeksInYear);
+dayjs.extend(isLeapYear);
 
 type Direction = "back" | "forward" | "middle";
 
@@ -38,7 +47,7 @@ const CalendarProvider = ({
   onRangeChange,
   onFilterData,
   onClearFilterData
-}: CalendarProviderProps) => {
+}: CalendarProviderProps): JSX.Element => {
   const { zoom: configZoom, maxRecordsPerPage = 50 } = config;
   const [zoom, setZoom] = useState<ZoomLevel>(configZoom);
   const [date, setDate] = useState(dayjs());
@@ -94,10 +103,15 @@ const CalendarProvider = ({
   const loadMore = useCallback(
     (direction: Direction) => {
       const cols = getVisibleCols(zoom);
+      let weekOffset: number;
       let offset: number;
       switch (zoom) {
         case 0:
-          offset = cols * 7;
+          weekOffset = cols * 7;
+          offset = Math.round(weekOffset);
+          if (offset % 2 !== 0) {
+            offset += offset > weekOffset ? 2 : 5;
+          }
           break;
         case 1:
           offset = cols;
@@ -243,7 +257,7 @@ const CalendarProvider = ({
   );
 };
 
-const useCalendar = () => useContext(calendarContext);
+const useCalendar = (): CalendarContextType => useContext(calendarContext);
 
 export default CalendarProvider;
 export { useCalendar };

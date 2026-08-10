@@ -1,5 +1,5 @@
 import { ThemeProvider } from "styled-components";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { JSX, useEffect, useMemo, useRef, useState } from "react";
 import dayjs from "dayjs";
 import { Calendar } from "@/components";
 import CalendarProvider from "@/context/CalendarProvider";
@@ -20,7 +20,7 @@ const Scheduler = ({
   onClearFilterData,
   onItemClick,
   isLoading
-}: SchedulerProps) => {
+}: SchedulerProps): JSX.Element => {
   const appConfig: Config = useMemo(
     () => ({
       zoom: 0,

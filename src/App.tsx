@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from "react";
+import { JSX, useCallback, useMemo, useState } from "react";
 import dayjs from "dayjs";
 import { createMockData } from "./mock/appMock";
 import { ParsedDatesRange } from "./utils/getDatesRange";
@@ -7,7 +7,7 @@ import ConfigPanel from "./components/ConfigPanel";
 import { StyledSchedulerFrame } from "./styles";
 import { Scheduler } from ".";
 
-function App() {
+function App(): JSX.Element {
   const [values, setValues] = useState<ConfigFormValues>({
     peopleCount: 15,
     projectsPerYear: 5,

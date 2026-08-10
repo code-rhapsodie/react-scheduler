@@ -15,7 +15,7 @@ export const drawZoom2MonthsOnTop = (
   cols: number,
   startDate: Day,
   theme: Theme
-) => {
+): void => {
   const daysInRange = Math.ceil(cols / hoursInDay);
   const startDay = dayjs(`${startDate.year}-${startDate.month + 1}-${startDate.dayOfMonth}`);
   const endDate = startDay.add(daysInRange - 1, "days");

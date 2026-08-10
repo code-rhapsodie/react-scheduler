@@ -17,7 +17,7 @@ export const drawMonthsInMiddle = (
   cols: number,
   startDate: Day,
   theme: Theme
-) => {
+): void => {
   let xPos = -(startDate.dayOfMonth - 1) * singleDayWidth;
   const yPos = headerMonthHeight;
   const monthIndex = startDate.month;

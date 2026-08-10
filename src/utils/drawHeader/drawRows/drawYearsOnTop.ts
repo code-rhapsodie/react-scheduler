@@ -8,7 +8,7 @@ export const drawYearsOnTop = (
   startDate: Day,
   dayOfYear: number,
   theme: Theme
-) => {
+): void => {
   const yPos = 0;
   const year = startDate.year;
   const canvasWidth = ctx.canvas.width * 2;

@@ -1,7 +1,7 @@
-import styled from "styled-components";
+import styled, { IStyledComponent } from "styled-components";
 import { marginPaddingReset } from "@/styles";
 
-export const StyledTooltipWrapper = styled.div`
+export const StyledTooltipWrapper: IStyledComponent<any, any> = styled.div`
   padding: 8px 16px;
   position: absolute;
   background-color: ${({ theme }) => theme.colors.tooltip};
@@ -12,10 +12,10 @@ export const StyledTooltipWrapper = styled.div`
   pointer-events: none;
 `;
 
-export const StyledTooltipContent = styled.div`
+export const StyledTooltipContent: IStyledComponent<any, any> = styled.div`
   width: 100%;
 `;
-export const StyledTooltipBeak = styled.div`
+export const StyledTooltipBeak: IStyledComponent<any, any> = styled.div`
   position: absolute;
   width: 0;
   height: 0;
@@ -27,15 +27,15 @@ export const StyledTooltipBeak = styled.div`
   border-top: 14px solid ${({ theme }) => theme.colors.tooltip};
 `;
 
-export const StyledContentWrapper = styled.div``;
-export const StyledInnerWrapper = styled.div`
+export const StyledContentWrapper: IStyledComponent<any, any> = styled.div``;
+export const StyledInnerWrapper: IStyledComponent<any, any> = styled.div`
   display: flex;
   align-items: center;
   &:first-child {
     margin-bottom: 8px;
   }
 `;
-export const StyledTextWrapper = styled.div`
+export const StyledTextWrapper: IStyledComponent<any, any> = styled.div`
   ${marginPaddingReset}
   display: flex;
   align-items: center;
@@ -45,13 +45,13 @@ export const StyledTextWrapper = styled.div`
   letter-spacing: 0.5px;
 `;
 
-export const StyledText = styled.p`
+export const StyledText: IStyledComponent<any, any> = styled.p`
   ${marginPaddingReset}
   margin-left: 4px;
   color: ${({ theme }) => theme.colors.textSecondary};
 `;
 
-export const StyledOvertimeWarning = styled.span`
+export const StyledOvertimeWarning: IStyledComponent<any, any> = styled.span`
   font-size: 10px;
   font-weight: 600;
   color: ${({ theme }) => theme.colors.warning};

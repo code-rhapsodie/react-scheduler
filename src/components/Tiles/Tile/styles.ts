@@ -1,9 +1,9 @@
-import styled from "styled-components";
+import styled, { IStyledComponent } from "styled-components";
 import { leftColumnWidth, tileHeight } from "@/constants";
 import { marginPaddingReset, truncate } from "@/styles";
 import { StyledTextProps } from "./types";
 
-export const StyledTileWrapper = styled.button`
+export const StyledTileWrapper: IStyledComponent<any, any> = styled.button`
   ${marginPaddingReset}
   height: ${tileHeight}px;
   position: absolute;
@@ -16,7 +16,7 @@ export const StyledTileWrapper = styled.button`
   cursor: pointer;
 `;
 
-export const StyledTextWrapper = styled.div`
+export const StyledTextWrapper: IStyledComponent<any, any> = styled.div`
   margin: 10px 16px;
   position: relative;
   display: flex;
@@ -25,7 +25,7 @@ export const StyledTextWrapper = styled.div`
   line-height: 12px;
 `;
 
-export const StyledText = styled.p<StyledTextProps>`
+export const StyledText: IStyledComponent<any, any> = styled.p<StyledTextProps>`
   ${marginPaddingReset}
   ${truncate}
   display: inline;
@@ -38,12 +38,12 @@ export const StyledText = styled.p<StyledTextProps>`
   }
 `;
 
-export const StyledDescription = styled.p`
+export const StyledDescription: IStyledComponent<any, any> = styled.p`
   ${marginPaddingReset}
   ${truncate}
 `;
 
-export const StyledStickyWrapper = styled.div`
+export const StyledStickyWrapper: IStyledComponent<any, any> = styled.div`
   position: sticky;
   left: ${leftColumnWidth + 16}px;
   overflow: hidden;

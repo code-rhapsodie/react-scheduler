@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { IStyledComponent } from "styled-components";
 import { Theme } from "@/styles";
 import { IconButtonVariant } from "./types";
 
@@ -23,7 +23,7 @@ const variantStyles = (theme: Theme, variant: IconButtonVariant, disabled?: bool
     }
   }[variant]);
 
-export const ButtonWrapper = styled.button<ButtonWrapperProps>`
+export const ButtonWrapper: IStyledComponent<any, any> = styled.button<ButtonWrapperProps>`
   outline: none;
   display: flex;
   align-items: center;

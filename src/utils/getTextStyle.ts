@@ -1,7 +1,7 @@
 import { Theme } from "@/styles";
 import { TextAndBoxStyleConfig } from "@/types/global";
 
-export const getTextStyle = (config: TextAndBoxStyleConfig, theme: Theme) => {
+export const getTextStyle = (config: TextAndBoxStyleConfig, theme: Theme): string => {
   const { isCurrent, isBusinessDay, variant } = config;
   if (isCurrent) return variant === "bottomRow" ? theme.colors.placeholder : theme.colors.accent;
   if (isBusinessDay)

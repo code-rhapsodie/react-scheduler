@@ -11,7 +11,7 @@ export const drawMonthlyView = (
   cols: number,
   startDate: Day,
   theme: Theme
-) => {
+): void => {
   for (let i = 0; i < rows; i++) {
     for (let y = 0; y <= cols; y++) {
       const date = dayjs(`${startDate.year}-${startDate.month + 1}-${startDate.dayOfMonth}`).add(

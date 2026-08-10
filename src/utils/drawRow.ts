@@ -1,7 +1,7 @@
 import { Theme } from "@/styles";
 import { DrawRowConfig } from "@/types/global";
 
-export const drawRow = (config: DrawRowConfig, theme: Theme) => {
+export const drawRow = (config: DrawRowConfig, theme: Theme): void => {
   const {
     ctx,
     x,

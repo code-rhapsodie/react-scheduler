@@ -10,7 +10,7 @@
  * // returns "white"
  * getTextColor("#000000");
  */
-export const getTileTextColor = (hexColor: string) => {
+export const getTileTextColor = (hexColor: string): "black"|"white" => {
   if (!hexColor) return "white";
 
   // convert hex to rgb values

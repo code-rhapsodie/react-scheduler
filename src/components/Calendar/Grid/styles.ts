@@ -1,18 +1,18 @@
-import styled from "styled-components";
+import styled, { IStyledComponent } from "styled-components";
 import { StyledSpanProps } from "./types";
 
-export const StyledWrapper = styled.div`
+export const StyledWrapper: IStyledComponent<any, any> = styled.div`
   height: calc(100vh - headerHeight);
 `;
 
-export const StyledInnerWrapper = styled.div`
+export const StyledInnerWrapper: IStyledComponent<any, any> = styled.div`
   position: relative;
 `;
 
-export const StyledCanvas = styled.canvas``;
-export const StyledCanvasHeader = styled.canvas``;
+export const StyledCanvas: IStyledComponent<any, any> = styled.canvas``;
+export const StyledCanvasHeader: IStyledComponent<any, any> = styled.canvas``;
 
-export const StyledSpan = styled.span<StyledSpanProps>`
+export const StyledSpan: IStyledComponent<any, any> = styled.span<StyledSpanProps>`
   width: 1px;
   height: 100%;
   position: absolute;

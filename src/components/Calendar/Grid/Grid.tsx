@@ -18,6 +18,7 @@ export function Grid({
 }: GridProps & { ref?: React.Ref<HTMLDivElement> }): JSX.Element {
   const { handleScrollNext, handleScrollPrev, date, isLoading, cols, startDate } = useCalendar();
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const wrapperRef = useRef<HTMLDivElement | null>(null);
   const refRight = useRef<HTMLSpanElement | null>(null);
   const refLeft = useRef<HTMLSpanElement | null>(null);
 
@@ -34,26 +35,23 @@ export function Grid({
   );
 
   useEffect(() => {
-    if (!canvasRef.current) return;
-    const ctx = canvasRef.current.getContext("2d");
-    if (!ctx) return;
-
-    const onResize = () => handleResize(ctx);
-
-    window.addEventListener("resize", onResize);
-
-    return () => window.removeEventListener("resize", onResize);
-  }, [handleResize]);
-
-  useEffect(() => {
+    const wrapper = wrapperRef.current;
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    if (!wrapper || !canvas) return;
+
     canvas.style.letterSpacing = "1px";
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
+    const observer = new ResizeObserver(() => {
+      handleResize(ctx);
+    });
+
+    observer.observe(wrapper);
     handleResize(ctx);
-  }, [date, rows, zoom, handleResize]);
+
+    return () => observer.disconnect();
+  }, [handleResize, date, rows, zoom]);
 
   useEffect(() => {
     if (!refRight.current) return;
@@ -81,7 +79,7 @@ export function Grid({
   }, [handleScrollPrev]);
 
   return (
-    <StyledWrapper id={canvasWrapperId}>
+    <StyledWrapper id={canvasWrapperId} ref={wrapperRef}>
       <StyledInnerWrapper ref={ref}>
         <StyledSpan position="left" ref={refLeft} />
         <Loader isLoading={isLoading} position="left" />

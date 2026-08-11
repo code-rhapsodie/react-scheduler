@@ -140,14 +140,20 @@ const CalendarProvider = ({
   );
 
   useEffect(() => {
-    outsideWrapper.current = document.getElementById(outsideWrapperId);
+    const element = document.getElementById(outsideWrapperId);
+    outsideWrapper.current = element;
     setCols(getCols(zoom));
-  }, [zoom]);
 
-  useEffect(() => {
-    const handleResize = () => setCols(getCols(zoom));
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    if (!element) return;
+
+    const observer = new ResizeObserver(() => {
+      const newCols = getCols(zoom);
+      setCols((prevCols) => (prevCols !== newCols ? newCols : prevCols));
+    });
+
+    observer.observe(element);
+
+    return () => observer.disconnect();
   }, [zoom]);
 
   useEffect(() => {

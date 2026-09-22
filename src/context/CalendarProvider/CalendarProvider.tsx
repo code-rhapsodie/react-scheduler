@@ -61,6 +61,7 @@ const CalendarProvider = ({
   const parsedStartDate = parseDay(startDate);
   const outsideWrapper = useRef<HTMLElement | null>(null);
   const [tilesCoords, setTilesCoords] = useState<Coords[]>([{ x: 0, y: 0 }]);
+  const [navigation, setNavigation] = useState<CalendarContextType["navigation"]>(null);
 
   const moveHorizontalScroll = useCallback(
     (direction: Direction, behavior: ScrollBehavior = "auto") => {
@@ -179,6 +180,7 @@ const CalendarProvider = ({
     setDate((prev) =>
       zoom === 2 ? prev.add(zoom2ButtonJump, "hours") : prev.add(buttonWeeksJump, "weeks")
     );
+    setNavigation((prev) => ({ direction: "next", tick: (prev?.tick ?? 0) + 1 }));
     onRangeChange?.(range);
   };
 
@@ -197,6 +199,7 @@ const CalendarProvider = ({
     setDate((prev) =>
       zoom === 2 ? prev.subtract(zoom2ButtonJump, "hours") : prev.subtract(buttonWeeksJump, "weeks")
     );
+    setNavigation((prev) => ({ direction: "prev", tick: (prev?.tick ?? 0) + 1 }));
     onRangeChange?.(range);
   };
 
@@ -255,6 +258,7 @@ const CalendarProvider = ({
         handleFilterData,
         tilesCoords,
         updateTilesCoords,
+        navigation,
         recordsThreshold: maxRecordsPerPage,
         onClearFilterData
       }}

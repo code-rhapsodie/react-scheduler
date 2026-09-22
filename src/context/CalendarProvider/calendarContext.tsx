@@ -32,6 +32,7 @@ export const calendarContext: Context<CalendarContextType> = createContext<Calen
   },
   dayOfYear: 0,
   recordsThreshold: 0,
+  navigation: null,
   config: {
     zoom: 0
   }

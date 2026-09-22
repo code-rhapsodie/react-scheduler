@@ -1,9 +1,10 @@
-import { FC } from "react";
+import { DragEvent, FC } from "react";
 import { useTheme } from "styled-components";
 import { useCalendar } from "@/context/CalendarProvider";
 import { getDatesRange } from "@/utils/getDatesRange";
 import { getTileProperties } from "@/utils/getTileProperties";
 import { getTileTextColor } from "@/utils/getTileTextColor";
+import { getCellWidth } from "@/utils/zoomUnits";
 import {
   StyledDescription,
   StyledStickyWrapper,
@@ -13,7 +14,7 @@ import {
 } from "./styles";
 import { TileProps } from "./types";
 
-const Tile: FC<TileProps> = ({ row, data, zoom, onTileClick }) => {
+const Tile: FC<TileProps> = ({ row, data, zoom, onTileClick, draggable }) => {
   const { date } = useCalendar();
   const datesRange = getDatesRange(date, zoom);
   const { y, x, width } = getTileProperties(
@@ -27,6 +28,13 @@ const Tile: FC<TileProps> = ({ row, data, zoom, onTileClick }) => {
 
   const { colors } = useTheme();
 
+  const handleDragStart = (e: DragEvent<HTMLButtonElement>) => {
+    const { left } = e.currentTarget.getBoundingClientRect();
+    const grabOffset = Math.floor((e.clientX - left) / getCellWidth(zoom));
+    e.dataTransfer.setData("application/json", JSON.stringify({ id: data.id, grabOffset }));
+    e.dataTransfer.effectAllowed = "move";
+  };
+
   return (
     <StyledTileWrapper
       style={{
@@ -37,6 +45,8 @@ const Tile: FC<TileProps> = ({ row, data, zoom, onTileClick }) => {
         color: getTileTextColor(data.bgColor ?? "")
       }}
       onClick={() => onTileClick?.(data)}
+      draggable={draggable}
+      onDragStart={draggable ? handleDragStart : undefined}
     >
       <StyledTextWrapper>
         <StyledStickyWrapper>

@@ -193,3 +193,58 @@ export type TooltipData = {
   resourceIndex: number;
   disposition: OccupancyData;
 };
+
+export type CellClickData = {
+  /**
+   * Id of the resource (row) the clicked cell belongs to
+   */
+  resourceId: string;
+  /**
+   * Date represented by the clicked cell
+   */
+  date: Date;
+};
+
+export type CellRangeSelectData = {
+  /**
+   * Id of the resource (row) the selected range belongs to
+   */
+  resourceId: string;
+  /**
+   * First date of the selected range
+   */
+  startDate: Date;
+  /**
+   * Last date of the selected range
+   */
+  endDate: Date;
+};
+
+export type SelectedRange = {
+  resourceId: string;
+  startDate: Date;
+  endDate: Date;
+};
+
+export type TileMoveData = {
+  /**
+   * Id of the moved tile's underlying item
+   */
+  id: string;
+  /**
+   * Id of the resource (row) the tile was dragged from
+   */
+  previousResourceId: string;
+  /**
+   * Id of the resource (row) the tile was dropped onto
+   */
+  resourceId: string;
+  /**
+   * New start date, shifted by the same amount the tile was dragged by
+   */
+  startDate: Date;
+  /**
+   * New end date, keeping the tile's original duration
+   */
+  endDate: Date;
+};

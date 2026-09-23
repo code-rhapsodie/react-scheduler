@@ -1,28 +1,249 @@
-import { JSX, useCallback, useEffect, useRef } from "react";
+import dayjs from "dayjs";
+import { DragEvent, JSX, MouseEvent, useCallback, useEffect, useRef, useState } from "react";
 import { useTheme } from "styled-components";
 import { drawGrid } from "@/utils/drawGrid/drawGrid";
 import { boxHeight, canvasWrapperId, leftColumnWidth, outsideWrapperId } from "@/constants";
-import { Loader, Tiles } from "@/components";
+import { Loader, Tile, Tiles } from "@/components";
+import { TileDragStart } from "@/components/Tiles/types";
+import { SchedulerProjectData } from "@/types/global";
 import { useCalendar } from "@/context/CalendarProvider";
 import { resizeCanvas } from "@/utils/resizeCanvas";
 import { getCanvasWidth } from "@/utils/getCanvasWidth";
+import { getCellRangeRect, resolveGridCell } from "@/utils/resolveGridCell";
+import { getCellTimeUnit } from "@/utils/zoomUnits";
 import { GridProps } from "./types";
-import { StyledCanvas, StyledInnerWrapper, StyledSpan, StyledWrapper } from "./styles";
+import {
+  StyledCanvas,
+  StyledInnerWrapper,
+  StyledSelectedCell,
+  StyledSpan,
+  StyledWrapper
+} from "./styles";
+
+type DropPreview = {
+  project: SchedulerProjectData;
+  resourceIndex: number;
+  startDate: Date;
+  endDate: Date;
+};
+
+type DragSelection = {
+  resourceIndex: number;
+  anchorDate: Date;
+  currentDate: Date;
+};
 
 export function Grid({
   zoom,
   rows,
   data,
   onTileClick,
+  onCellClick,
+  onCellRangeSelect,
+  onTileMove,
+  selectedCell,
   ref
 }: GridProps & { ref?: React.Ref<HTMLDivElement> }): JSX.Element {
-  const { handleScrollNext, handleScrollPrev, date, isLoading, cols, startDate } = useCalendar();
+  const { handleScrollNext, handleScrollPrev, date, isLoading, cols, startDate, navigation } =
+    useCalendar();
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const wrapperRef = useRef<HTMLDivElement | null>(null);
+  const innerRef = useRef<HTMLDivElement | null>(null);
   const refRight = useRef<HTMLSpanElement | null>(null);
   const refLeft = useRef<HTMLSpanElement | null>(null);
+  const [dragSelection, setDragSelection] = useState<DragSelection | null>(null);
+  const dragSelectionRef = useRef<DragSelection | null>(null);
+
+  const updateDragSelection = useCallback((next: DragSelection | null) => {
+    dragSelectionRef.current = next;
+    setDragSelection(next);
+  }, []);
+
+  const setInnerRef = useCallback(
+    (node: HTMLDivElement | null) => {
+      innerRef.current = node;
+      if (typeof ref === "function") {
+        ref(node);
+      } else if (ref) {
+        (ref as React.RefObject<HTMLDivElement | null>).current = node;
+      }
+    },
+    [ref]
+  );
 
   const theme = useTheme();
+
+  const rowsPerPerson = data.map((person) => Math.max(person.data.length, 1));
+
+  const highlightRect = dragSelection
+    ? getCellRangeRect(
+        startDate,
+        rowsPerPerson,
+        dragSelection.resourceIndex,
+        dragSelection.anchorDate,
+        dragSelection.currentDate,
+        zoom
+      )
+    : selectedCell
+      ? getCellRangeRect(
+          startDate,
+          rowsPerPerson,
+          data.findIndex((person) => person.id === selectedCell.resourceId),
+          selectedCell.startDate,
+          selectedCell.endDate,
+          zoom
+        )
+      : null;
+
+  const resolveCell = useCallback(
+    (clientX: number, clientY: number) => {
+      const canvas = canvasRef.current;
+      if (!canvas) return null;
+      const { left, top } = canvas.getBoundingClientRect();
+      return resolveGridCell(
+        startDate,
+        { x: clientX - left, y: clientY - top },
+        rowsPerPerson,
+        zoom
+      );
+    },
+    [rowsPerPerson, startDate, zoom]
+  );
+
+  const handleCanvasMouseDown = useCallback(
+    (e: MouseEvent<HTMLCanvasElement>) => {
+      if (!onCellClick && !onCellRangeSelect) return;
+      const cell = resolveCell(e.clientX, e.clientY);
+      if (!cell || !data[cell.resourceIndex]) return;
+      updateDragSelection({
+        resourceIndex: cell.resourceIndex,
+        anchorDate: cell.date,
+        currentDate: cell.date
+      });
+    },
+    [data, onCellClick, onCellRangeSelect, resolveCell, updateDragSelection]
+  );
+
+  const isDragSelecting = dragSelection !== null;
+
+  useEffect(() => {
+    if (!isDragSelecting) return;
+
+    const handleMouseMove = (e: globalThis.MouseEvent) => {
+      const current = dragSelectionRef.current;
+      const cell = resolveCell(e.clientX, e.clientY);
+      if (!cell || !current) return;
+      updateDragSelection({ ...current, currentDate: cell.date });
+    };
+
+    const handleMouseUp = () => {
+      const current = dragSelectionRef.current;
+      updateDragSelection(null);
+      if (!current) return;
+
+      const resource = data[current.resourceIndex];
+      if (!resource) return;
+
+      const [start, end] =
+        current.anchorDate.getTime() <= current.currentDate.getTime()
+          ? [current.anchorDate, current.currentDate]
+          : [current.currentDate, current.anchorDate];
+
+      if (start.getTime() === end.getTime()) {
+        onCellClick?.({ resourceId: resource.id, date: start });
+      } else {
+        onCellRangeSelect?.({ resourceId: resource.id, startDate: start, endDate: end });
+      }
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mouseup", handleMouseUp);
+
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", handleMouseUp);
+    };
+  }, [isDragSelecting, data, onCellClick, onCellRangeSelect, resolveCell, updateDragSelection]);
+
+  const draggedTileRef = useRef<TileDragStart | null>(null);
+  const [dropPreview, setDropPreview] = useState<DropPreview | null>(null);
+
+  const handleTileDragStart = useCallback((drag: TileDragStart) => {
+    draggedTileRef.current = drag;
+  }, []);
+
+  const handleTileDragEnd = useCallback(() => {
+    draggedTileRef.current = null;
+    setDropPreview(null);
+  }, []);
+
+  const resolveDropTarget = useCallback(
+    (clientX: number, clientY: number): DropPreview | null => {
+      const dragged = draggedTileRef.current;
+      if (!dragged) return null;
+      const cell = resolveCell(clientX, clientY);
+      if (!cell || !data[cell.resourceIndex]) return null;
+
+      const { project, grabOffset } = dragged;
+      const startDate = dayjs(cell.date).subtract(grabOffset, getCellTimeUnit(zoom)).toDate();
+      const duration = project.endDate.getTime() - project.startDate.getTime();
+
+      return {
+        project,
+        resourceIndex: cell.resourceIndex,
+        startDate,
+        endDate: new Date(startDate.getTime() + duration)
+      };
+    },
+    [data, resolveCell, zoom]
+  );
+
+  const handleDragOver = useCallback(
+    (e: DragEvent<HTMLDivElement>) => {
+      if (!draggedTileRef.current) return;
+      e.preventDefault();
+      e.dataTransfer.dropEffect = "move";
+
+      const target = resolveDropTarget(e.clientX, e.clientY);
+      // dragover fires continuously: only re-render when the landing cell changes
+      setDropPreview((prev) =>
+        prev &&
+        target &&
+        prev.resourceIndex === target.resourceIndex &&
+        prev.startDate.getTime() === target.startDate.getTime()
+          ? prev
+          : target
+      );
+    },
+    [resolveDropTarget]
+  );
+
+  const handleDragLeave = useCallback((e: DragEvent<HTMLDivElement>) => {
+    if (e.currentTarget.contains(e.relatedTarget as Node | null)) return;
+    setDropPreview(null);
+  }, []);
+
+  const handleDrop = useCallback(
+    (e: DragEvent<HTMLDivElement>) => {
+      const dragged = draggedTileRef.current;
+      if (!onTileMove || !dragged) return;
+      e.preventDefault();
+
+      const target = resolveDropTarget(e.clientX, e.clientY);
+      draggedTileRef.current = null;
+      setDropPreview(null);
+      if (!target) return;
+
+      onTileMove({
+        id: dragged.project.id,
+        previousResourceId: dragged.resourceId,
+        resourceId: data[target.resourceIndex].id,
+        startDate: target.startDate,
+        endDate: target.endDate
+      });
+    },
+    [data, onTileMove, resolveDropTarget]
+  );
 
   const handleResize = useCallback(
     (ctx: CanvasRenderingContext2D) => {
@@ -54,6 +275,15 @@ export function Grid({
   }, [handleResize, date, rows, zoom]);
 
   useEffect(() => {
+    const el = innerRef.current;
+    if (!el || !navigation) return;
+
+    el.classList.remove("slide-next", "slide-prev");
+    void el.offsetWidth;
+    el.classList.add(navigation.direction === "next" ? "slide-next" : "slide-prev");
+  }, [navigation]);
+
+  useEffect(() => {
     if (!refRight.current) return;
     const observerRight = new IntersectionObserver(
       (e) => (e[0].isIntersecting ? handleScrollNext() : null),
@@ -80,12 +310,48 @@ export function Grid({
 
   return (
     <StyledWrapper id={canvasWrapperId} ref={wrapperRef}>
-      <StyledInnerWrapper ref={ref}>
-        <StyledSpan position="left" ref={refLeft} />
+      <StyledInnerWrapper
+        ref={setInnerRef}
+        onDragOver={onTileMove ? handleDragOver : undefined}
+        onDragLeave={onTileMove ? handleDragLeave : undefined}
+        onDrop={onTileMove ? handleDrop : undefined}
+      >
+        <StyledSpan $position="left" ref={refLeft} />
         <Loader isLoading={isLoading} position="left" />
-        <StyledCanvas ref={canvasRef} />
-        <Tiles data={data} zoom={zoom} onTileClick={onTileClick} />
-        <StyledSpan ref={refRight} position="right" />
+        <StyledCanvas ref={canvasRef} onMouseDown={handleCanvasMouseDown} />
+        <Tiles
+          data={data}
+          zoom={zoom}
+          onTileClick={onTileClick}
+          onTileMove={onTileMove}
+          onTileDragStart={handleTileDragStart}
+          onTileDragEnd={handleTileDragEnd}
+        />
+        {dropPreview && (
+          <Tile
+            row={rowsPerPerson
+              .slice(0, dropPreview.resourceIndex)
+              .reduce((acc, cur) => acc + cur, 0)}
+            data={{
+              ...dropPreview.project,
+              startDate: dropPreview.startDate,
+              endDate: dropPreview.endDate
+            }}
+            zoom={zoom}
+            preview
+          />
+        )}
+        {highlightRect && (
+          <StyledSelectedCell
+            style={{
+              left: `${highlightRect.x}px`,
+              top: `${highlightRect.y}px`,
+              width: `${highlightRect.width}px`,
+              height: `${highlightRect.height}px`
+            }}
+          />
+        )}
+        <StyledSpan ref={refRight} $position="right" />
         <Loader isLoading={isLoading} position="right" />
       </StyledInnerWrapper>
     </StyledWrapper>

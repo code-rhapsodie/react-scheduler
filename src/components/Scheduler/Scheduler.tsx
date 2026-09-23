@@ -19,6 +19,10 @@ const Scheduler = ({
   onFilterData,
   onClearFilterData,
   onItemClick,
+  onCellClick,
+  onCellRangeSelect,
+  onTileMove,
+  selectedCell,
   isLoading
 }: SchedulerProps): JSX.Element => {
   const appConfig: Config = useMemo(
@@ -81,7 +85,7 @@ const Scheduler = ({
             onClearFilterData={onClearFilterData}
           >
             <StyledOutsideWrapper
-              showScroll={!!data.length}
+              $showScroll={!!data.length}
               id={outsideWrapperId}
               ref={outsideWrapperRef}
             >
@@ -91,6 +95,10 @@ const Scheduler = ({
                   onTileClick={onTileClick}
                   topBarWidth={topBarWidth ?? 0}
                   onItemClick={onItemClick}
+                  onCellClick={onCellClick}
+                  onCellRangeSelect={onCellRangeSelect}
+                  onTileMove={onTileMove}
+                  selectedCell={selectedCell}
                   toggleTheme={toggleTheme}
                 />
               </StyledInnerWrapper>

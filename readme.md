@@ -155,15 +155,19 @@ const mockedSchedulerData: SchedulerData = [
 
 ##### Scheduler Component Props
 
-| Property Name     | Type       | Arguments                         | Description                                                                                                                       |
-| ----------------- | ---------- | --------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| isLoading         | `boolean`  | -                                 | shows loading indicators on scheduler                                                                                             |
-| onRangeChange     | `function` | updated `startDate` and `endDate` | runs whenever user reaches end of currently rendered canvas                                                                       |
-| onTileClick       | `function` | clicked resource data             | detects resource click                                                                                                            |
-| onItemClick       | `function` | clicked left column item data     | detects item click on left column                                                                                                 |
-| onFilterData      | `function` | -                                 | callback firing when filter button was clicked                                                                                    |
-| onClearFilterData | `function` | -                                 | callback firing when clear filters button was clicked (clearing button is visible **only** when filterButtonState is set to `>0`) |
-| config            | `Config`   | -                                 | object with scheduler config properties                                                                                           |
+| Property Name     | Type                      | Arguments                         | Description                                                                                                                       |
+| ----------------- | ------------------------- | --------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| isLoading         | `boolean`                 | -                                 | shows loading indicators on scheduler                                                                                             |
+| onRangeChange     | `function`                | updated `startDate` and `endDate` | runs whenever user reaches end of currently rendered canvas                                                                       |
+| onTileClick       | `function`                | clicked resource data             | detects resource click                                                                                                            |
+| onItemClick       | `function`                | clicked left column item data     | detects item click on left column                                                                                                 |
+| onFilterData      | `function`                | -                                 | callback firing when filter button was clicked                                                                                    |
+| onClearFilterData | `function`                | -                                 | callback firing when clear filters button was clicked (clearing button is visible **only** when filterButtonState is set to `>0`) |
+| onCellClick       | `function`                | `CellClickData`                   | fired when clicking an empty cell (a resource row on a given date, with no tile) without dragging to another date                 |
+| onCellRangeSelect | `function`                | `CellRangeSelectData`             | fired when dragging across several cells of the same resource row, from mouse down to mouse up                                    |
+| onTileMove        | `function`                | `TileMoveData`                    | fired when a tile is dragged and dropped onto a new cell. Providing it enables tile drag & drop                                   |
+| selectedCell      | `SelectedRange` or `null` | -                                 | cell or range of cells to highlight on the grid, e.g. the last selection made via `onCellClick` / `onCellRangeSelect`             |
+| config            | `Config`                  | -                                 | object with scheduler config properties                                                                                           |
 
 ##### Scheduler Config Object
 
@@ -276,16 +280,115 @@ data that is accessible as argument of `onItemClick` callback
 
 item that will be visible on the grid as tile and that will be accessible as argument of `onTileClick` event
 
-| Property Name | Type                | Description                                                                                             |
-| ------------- | ------------------- | ------------------------------------------------------------------------------------------------------- |
-| id            | `string`            | unique resource id                                                                                      |
-| title         | `string`            | resource title that will be displayed on resource tile                                                  |
-| subtitle      | `string (optional)` | resource subtitle that will be displayed on resource tile                                               |
-| description   | `string (optional)` | resource description that will be displayed on resource tile                                            |
-| startDate     | `Date`              | date for calculating start position for resource                                                        |
-| endDate       | `Date`              | date for calculating end position for resource                                                          |
-| occupancy     | `number`            | number of seconds resource takes up for given row that will be visible on resource tooltip when hovered |
-| bgColor       | `string (optional)` | tile color                                                                                              |
+| Property Name | Type                       | Description                                                                                             |
+| ------------- | -------------------------- | ------------------------------------------------------------------------------------------------------- |
+| id            | `string`                   | unique resource id                                                                                      |
+| title         | `string`                   | resource title that will be displayed on resource tile                                                  |
+| subtitle      | `string (optional)`        | resource subtitle that will be displayed on resource tile                                               |
+| description   | `string (optional)`        | resource description that will be displayed on resource tile                                            |
+| startDate     | `Date`                     | date for calculating start position for resource                                                        |
+| endDate       | `Date`                     | date for calculating end position for resource                                                          |
+| occupancy     | `number`                   | number of seconds resource takes up for given row that will be visible on resource tooltip when hovered |
+| bgColor       | `string (optional)`        | tile color                                                                                              |
+| draggable     | `boolean (optional)`       | whether the tile can be dragged when `onTileMove` is provided. Defaults to `true`                       |
+| style         | `CSSProperties (optional)` | additional inline styles applied to the tile (e.g. `backgroundImage`), overriding the default ones      |
+
+### Cell selection and drag & drop
+
+The scheduler supports selecting empty cells and rescheduling tiles by dragging them. These interactions are opt-in: they are only enabled when the matching callbacks are provided.
+
+- **Cell click / range selection**: pressing the mouse on the grid and releasing it on the same cell fires `onCellClick`; dragging across several cells of the same resource row fires `onCellRangeSelect` (the range can be dragged in either direction, `startDate` is always the earliest date). While dragging, the selected range is highlighted.
+- **Highlighting a selection**: the scheduler does not keep the selection itself. Pass it back through the `selectedCell` prop to keep it highlighted (set it to `null` to clear it).
+- **Tile drag & drop**: when `onTileMove` is provided, every tile becomes draggable (unless its `draggable` property is set to `false`). While dragging, a ghost preview shows where the tile will land. On drop, `onTileMove` receives the new resource and dates: the tile keeps its original duration and the point where it was grabbed is preserved. The scheduler does not update its data by itself, so update your `data` in the callback.
+
+```tsx
+import {
+  Scheduler,
+  SchedulerData,
+  CellClickData,
+  CellRangeSelectData,
+  SelectedRange,
+  TileMoveData
+} from "@code-rhapsodie/react-scheduler";
+
+export default function Component() {
+  const [data, setData] = useState<SchedulerData>(mockedSchedulerData);
+  const [selectedCell, setSelectedCell] = useState<SelectedRange | null>(null);
+
+  const handleCellClick = ({ resourceId, date }: CellClickData) =>
+    setSelectedCell({ resourceId, startDate: date, endDate: date });
+
+  const handleCellRangeSelect = (range: CellRangeSelectData) => setSelectedCell(range);
+
+  const handleTileMove = ({
+    id,
+    previousResourceId,
+    resourceId,
+    startDate,
+    endDate
+  }: TileMoveData) =>
+    setData((rows) => {
+      const tile = rows
+        .find((row) => row.id === previousResourceId)
+        ?.data.find((item) => item.id === id);
+      if (!tile) return rows;
+
+      return rows.map((row) => {
+        const items = row.data.filter((item) => item.id !== id);
+        return row.id === resourceId
+          ? { ...row, data: [...items, { ...tile, startDate, endDate }] }
+          : { ...row, data: items };
+      });
+    });
+
+  return (
+    <Scheduler
+      data={data}
+      onCellClick={handleCellClick}
+      onCellRangeSelect={handleCellRangeSelect}
+      onTileMove={handleTileMove}
+      selectedCell={selectedCell}
+    />
+  );
+}
+```
+
+##### Cell Click Data
+
+argument of `onCellClick` callback
+
+| Property Name | Type     | Description                                  |
+| ------------- | -------- | -------------------------------------------- |
+| resourceId    | `string` | id of the resource (row) the cell belongs to |
+| date          | `Date`   | date represented by the clicked cell         |
+
+##### Cell Range Select Data
+
+argument of `onCellRangeSelect` callback, same shape as the `SelectedRange` accepted by the `selectedCell` prop
+
+| Property Name | Type     | Description                                   |
+| ------------- | -------- | --------------------------------------------- |
+| resourceId    | `string` | id of the resource (row) the range belongs to |
+| startDate     | `Date`   | first date of the selected range              |
+| endDate       | `Date`   | last date of the selected range               |
+
+##### Tile Move Data
+
+argument of `onTileMove` callback
+
+| Property Name      | Type     | Description                                                   |
+| ------------------ | -------- | ------------------------------------------------------------- |
+| id                 | `string` | id of the moved resource item                                 |
+| previousResourceId | `string` | id of the resource (row) the tile was dragged from            |
+| resourceId         | `string` | id of the resource (row) the tile was dropped onto            |
+| startDate          | `Date`   | new start date, shifted by the amount the tile was dragged by |
+| endDate            | `Date`   | new end date, keeping the tile's original duration            |
+
+All these types (`CellClickData`, `CellRangeSelectData`, `SelectedRange`, `TileMoveData`) are exported from the package.
+
+### Navigation transitions
+
+Moving to the previous or next period with the top bar buttons now plays a short slide animation on the grid, in the direction of the navigation.
 
 ### Troubleshooting
 

@@ -1,9 +1,9 @@
 import styled, { IStyledComponent } from "styled-components";
 import { leftColumnWidth, tileHeight } from "@/constants";
 import { marginPaddingReset, truncate } from "@/styles";
-import { StyledTextProps } from "./types";
+import { StyledTextProps, StyledTileWrapperProps } from "./types";
 
-export const StyledTileWrapper: IStyledComponent<any, any> = styled.button`
+export const StyledTileWrapper: IStyledComponent<any, any> = styled.button<StyledTileWrapperProps>`
   ${marginPaddingReset}
   height: ${tileHeight}px;
   position: absolute;
@@ -14,6 +14,14 @@ export const StyledTileWrapper: IStyledComponent<any, any> = styled.button`
   color: ${({ theme }) => theme.colors.textPrimary};
   width: 100%;
   cursor: pointer;
+  ${({ $preview, theme }) =>
+    $preview &&
+    `
+    opacity: 0.6;
+    pointer-events: none;
+    outline: 2px dashed ${theme.colors.accent};
+    outline-offset: 1px;
+  `}
 `;
 
 export const StyledTextWrapper: IStyledComponent<any, any> = styled.div`
@@ -29,7 +37,7 @@ export const StyledText: IStyledComponent<any, any> = styled.p<StyledTextProps>`
   ${marginPaddingReset}
   ${truncate}
   display: inline;
-  font-weight: ${({ bold }) => (bold ? "600" : "400")};
+  font-weight: ${({ $bold }) => ($bold ? "600" : "400")};
   &:first-child {
     &::after {
       content: "|";

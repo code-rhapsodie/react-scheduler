@@ -26,6 +26,12 @@ export type CalendarContextType = {
   dayOfYear: number;
   recordsThreshold: number;
   config: Config;
+  /**
+   * Bumped every time handleGoNext/handleGoPrev navigate, paired with the direction,
+   * so a consumer can replay a transition each time (a plain state change is not enough
+   * when the same direction is pressed twice in a row).
+   */
+  navigation: { direction: "next" | "prev"; tick: number } | null;
 };
 
 export type CalendarProviderProps = {

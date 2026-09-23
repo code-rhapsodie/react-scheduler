@@ -21,10 +21,10 @@ const IconButton = ({
   return (
     <ButtonWrapper
       onClick={onClick}
-      isFullRounded={isFullRounded}
-      hasChildren={!!children}
+      $isFullRounded={isFullRounded}
+      $hasChildren={!!children}
       disabled={isDisabled}
-      variant={variant}
+      $variant={variant}
     >
       <Icon
         iconName={iconName}

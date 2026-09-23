@@ -74,7 +74,8 @@ export const getCellRect = (
 
 /**
  * The pixel rect spanning every cell between rangeStart and rangeEnd (inclusive), on a
- * single resource row.
+ * single resource row. The two dates may be given in either order (e.g. when a selection
+ * is dragged leftwards from its anchor).
  */
 export const getCellRangeRect = (
   startDate: Day,
@@ -84,8 +85,10 @@ export const getCellRangeRect = (
   rangeEnd: Date,
   zoom: number
 ): CellRect | null => {
-  const firstCell = getCellRect(startDate, rowsPerPerson, resourceIndex, rangeStart, zoom);
-  const lastCell = getCellRect(startDate, rowsPerPerson, resourceIndex, rangeEnd, zoom);
+  const [from, to] =
+    rangeStart.getTime() <= rangeEnd.getTime() ? [rangeStart, rangeEnd] : [rangeEnd, rangeStart];
+  const firstCell = getCellRect(startDate, rowsPerPerson, resourceIndex, from, zoom);
+  const lastCell = getCellRect(startDate, rowsPerPerson, resourceIndex, to, zoom);
   if (!firstCell || !lastCell) {
     return null;
   }

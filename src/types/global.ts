@@ -1,3 +1,4 @@
+import { CSSProperties } from "react";
 import { LocaleType } from "@/context/LocaleProvider/types";
 import { ColorType } from "@/styles";
 
@@ -114,6 +115,14 @@ export type SchedulerProjectData = {
    * Background color of the tile, given in rgb color model. If not given, default color (rgb(114, 141,226 )) is set. Optional
    */
   bgColor?: string;
+  /**
+   * Whether the tile can be dragged when onTileMove is provided. Defaults to true. Optional
+   */
+  draggable?: boolean;
+  /**
+   * Additional inline styles applied to the tile (e.g. backgroundImage). Optional
+   */
+  style?: CSSProperties;
 };
 
 export type Day = {

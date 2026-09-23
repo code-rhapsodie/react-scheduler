@@ -52,7 +52,8 @@ const Tile: FC<TileProps> = ({
         top: `${y}px`,
         backgroundColor: `${data.bgColor ?? colors.defaultTile}`,
         width: `${width}px`,
-        color: getTileTextColor(data.bgColor ?? "")
+        color: getTileTextColor(data.bgColor ?? ""),
+        ...data.style
       }}
       onClick={preview ? undefined : () => onTileClick?.(data)}
       draggable={draggable && !preview}

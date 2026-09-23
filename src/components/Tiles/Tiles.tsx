@@ -25,7 +25,7 @@ const Tiles: FC<TilesProps> = ({
               data={project}
               zoom={zoom}
               onTileClick={onTileClick}
-              draggable={!!onTileMove}
+              draggable={!!onTileMove && project.draggable !== false}
               onDragStart={(grabOffset) =>
                 onTileDragStart?.({ project, resourceId: person.id, grabOffset })
               }

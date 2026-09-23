@@ -3,14 +3,29 @@ import { DragEvent, JSX, MouseEvent, useCallback, useEffect, useRef, useState } 
 import { useTheme } from "styled-components";
 import { drawGrid } from "@/utils/drawGrid/drawGrid";
 import { boxHeight, canvasWrapperId, leftColumnWidth, outsideWrapperId } from "@/constants";
-import { Loader, Tiles } from "@/components";
+import { Loader, Tile, Tiles } from "@/components";
+import { TileDragStart } from "@/components/Tiles/types";
+import { SchedulerProjectData } from "@/types/global";
 import { useCalendar } from "@/context/CalendarProvider";
 import { resizeCanvas } from "@/utils/resizeCanvas";
 import { getCanvasWidth } from "@/utils/getCanvasWidth";
 import { getCellRangeRect, resolveGridCell } from "@/utils/resolveGridCell";
 import { getCellTimeUnit } from "@/utils/zoomUnits";
 import { GridProps } from "./types";
-import { StyledCanvas, StyledInnerWrapper, StyledSelectedCell, StyledSpan, StyledWrapper } from "./styles";
+import {
+  StyledCanvas,
+  StyledInnerWrapper,
+  StyledSelectedCell,
+  StyledSpan,
+  StyledWrapper
+} from "./styles";
+
+type DropPreview = {
+  project: SchedulerProjectData;
+  resourceIndex: number;
+  startDate: Date;
+  endDate: Date;
+};
 
 type DragSelection = {
   resourceIndex: number;
@@ -85,7 +100,12 @@ export function Grid({
       const canvas = canvasRef.current;
       if (!canvas) return null;
       const { left, top } = canvas.getBoundingClientRect();
-      return resolveGridCell(startDate, { x: clientX - left, y: clientY - top }, rowsPerPerson, zoom);
+      return resolveGridCell(
+        startDate,
+        { x: clientX - left, y: clientY - top },
+        rowsPerPerson,
+        zoom
+      );
     },
     [rowsPerPerson, startDate, zoom]
   );
@@ -95,7 +115,11 @@ export function Grid({
       if (!onCellClick && !onCellRangeSelect) return;
       const cell = resolveCell(e.clientX, e.clientY);
       if (!cell || !data[cell.resourceIndex]) return;
-      updateDragSelection({ resourceIndex: cell.resourceIndex, anchorDate: cell.date, currentDate: cell.date });
+      updateDragSelection({
+        resourceIndex: cell.resourceIndex,
+        anchorDate: cell.date,
+        currentDate: cell.date
+      });
     },
     [data, onCellClick, onCellRangeSelect, resolveCell, updateDragSelection]
   );
@@ -141,50 +165,84 @@ export function Grid({
     };
   }, [isDragSelecting, data, onCellClick, onCellRangeSelect, resolveCell, updateDragSelection]);
 
-  const handleDragOver = useCallback((e: DragEvent<HTMLCanvasElement>) => {
-    e.preventDefault();
-    e.dataTransfer.dropEffect = "move";
+  const draggedTileRef = useRef<TileDragStart | null>(null);
+  const [dropPreview, setDropPreview] = useState<DropPreview | null>(null);
+
+  const handleTileDragStart = useCallback((drag: TileDragStart) => {
+    draggedTileRef.current = drag;
+  }, []);
+
+  const handleTileDragEnd = useCallback(() => {
+    draggedTileRef.current = null;
+    setDropPreview(null);
+  }, []);
+
+  const resolveDropTarget = useCallback(
+    (clientX: number, clientY: number): DropPreview | null => {
+      const dragged = draggedTileRef.current;
+      if (!dragged) return null;
+      const cell = resolveCell(clientX, clientY);
+      if (!cell || !data[cell.resourceIndex]) return null;
+
+      const { project, grabOffset } = dragged;
+      const startDate = dayjs(cell.date).subtract(grabOffset, getCellTimeUnit(zoom)).toDate();
+      const duration = project.endDate.getTime() - project.startDate.getTime();
+
+      return {
+        project,
+        resourceIndex: cell.resourceIndex,
+        startDate,
+        endDate: new Date(startDate.getTime() + duration)
+      };
+    },
+    [data, resolveCell, zoom]
+  );
+
+  const handleDragOver = useCallback(
+    (e: DragEvent<HTMLDivElement>) => {
+      if (!draggedTileRef.current) return;
+      e.preventDefault();
+      e.dataTransfer.dropEffect = "move";
+
+      const target = resolveDropTarget(e.clientX, e.clientY);
+      // dragover fires continuously: only re-render when the landing cell changes
+      setDropPreview((prev) =>
+        prev &&
+        target &&
+        prev.resourceIndex === target.resourceIndex &&
+        prev.startDate.getTime() === target.startDate.getTime()
+          ? prev
+          : target
+      );
+    },
+    [resolveDropTarget]
+  );
+
+  const handleDragLeave = useCallback((e: DragEvent<HTMLDivElement>) => {
+    if (e.currentTarget.contains(e.relatedTarget as Node | null)) return;
+    setDropPreview(null);
   }, []);
 
   const handleDrop = useCallback(
-    (e: DragEvent<HTMLCanvasElement>) => {
-      if (!onTileMove) return;
+    (e: DragEvent<HTMLDivElement>) => {
+      const dragged = draggedTileRef.current;
+      if (!onTileMove || !dragged) return;
       e.preventDefault();
-      const payload = e.dataTransfer.getData("application/json");
-      if (!payload) return;
 
-      const { id: tileId, grabOffset }: { id: string; grabOffset: number } = JSON.parse(payload);
-
-      let previousResourceId: string | undefined;
-      let duration = 0;
-      for (const person of data) {
-        for (const row of person.data) {
-          const project = row.find((p) => p.id === tileId);
-          if (project) {
-            previousResourceId = person.id;
-            duration = project.endDate.getTime() - project.startDate.getTime();
-            break;
-          }
-        }
-        if (previousResourceId) break;
-      }
-      if (!previousResourceId) return;
-
-      const cell = resolveCell(e.clientX, e.clientY);
-      const resource = cell && data[cell.resourceIndex];
-      if (!cell || !resource) return;
-
-      const newStartDate = dayjs(cell.date).subtract(grabOffset, getCellTimeUnit(zoom)).toDate();
+      const target = resolveDropTarget(e.clientX, e.clientY);
+      draggedTileRef.current = null;
+      setDropPreview(null);
+      if (!target) return;
 
       onTileMove({
-        id: tileId,
-        previousResourceId,
-        resourceId: resource.id,
-        startDate: newStartDate,
-        endDate: new Date(newStartDate.getTime() + duration)
+        id: dragged.project.id,
+        previousResourceId: dragged.resourceId,
+        resourceId: data[target.resourceIndex].id,
+        startDate: target.startDate,
+        endDate: target.endDate
       });
     },
-    [data, onTileMove, resolveCell, zoom]
+    [data, onTileMove, resolveDropTarget]
   );
 
   const handleResize = useCallback(
@@ -252,16 +310,37 @@ export function Grid({
 
   return (
     <StyledWrapper id={canvasWrapperId} ref={wrapperRef}>
-      <StyledInnerWrapper ref={setInnerRef}>
+      <StyledInnerWrapper
+        ref={setInnerRef}
+        onDragOver={onTileMove ? handleDragOver : undefined}
+        onDragLeave={onTileMove ? handleDragLeave : undefined}
+        onDrop={onTileMove ? handleDrop : undefined}
+      >
         <StyledSpan $position="left" ref={refLeft} />
         <Loader isLoading={isLoading} position="left" />
-        <StyledCanvas
-          ref={canvasRef}
-          onMouseDown={handleCanvasMouseDown}
-          onDragOver={onTileMove ? handleDragOver : undefined}
-          onDrop={onTileMove ? handleDrop : undefined}
+        <StyledCanvas ref={canvasRef} onMouseDown={handleCanvasMouseDown} />
+        <Tiles
+          data={data}
+          zoom={zoom}
+          onTileClick={onTileClick}
+          onTileMove={onTileMove}
+          onTileDragStart={handleTileDragStart}
+          onTileDragEnd={handleTileDragEnd}
         />
-        <Tiles data={data} zoom={zoom} onTileClick={onTileClick} onTileMove={onTileMove} />
+        {dropPreview && (
+          <Tile
+            row={rowsPerPerson
+              .slice(0, dropPreview.resourceIndex)
+              .reduce((acc, cur) => acc + cur, 0)}
+            data={{
+              ...dropPreview.project,
+              startDate: dropPreview.startDate,
+              endDate: dropPreview.endDate
+            }}
+            zoom={zoom}
+            preview
+          />
+        )}
         {highlightRect && (
           <StyledSelectedCell
             style={{

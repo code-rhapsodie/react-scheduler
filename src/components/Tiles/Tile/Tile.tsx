@@ -14,7 +14,16 @@ import {
 } from "./styles";
 import { TileProps } from "./types";
 
-const Tile: FC<TileProps> = ({ row, data, zoom, onTileClick, draggable }) => {
+const Tile: FC<TileProps> = ({
+  row,
+  data,
+  zoom,
+  onTileClick,
+  draggable,
+  onDragStart,
+  onDragEnd,
+  preview
+}) => {
   const { date } = useCalendar();
   const datesRange = getDatesRange(date, zoom);
   const { y, x, width } = getTileProperties(
@@ -33,6 +42,7 @@ const Tile: FC<TileProps> = ({ row, data, zoom, onTileClick, draggable }) => {
     const grabOffset = Math.floor((e.clientX - left) / getCellWidth(zoom));
     e.dataTransfer.setData("application/json", JSON.stringify({ id: data.id, grabOffset }));
     e.dataTransfer.effectAllowed = "move";
+    onDragStart?.(grabOffset);
   };
 
   return (
@@ -44,9 +54,13 @@ const Tile: FC<TileProps> = ({ row, data, zoom, onTileClick, draggable }) => {
         width: `${width}px`,
         color: getTileTextColor(data.bgColor ?? "")
       }}
-      onClick={() => onTileClick?.(data)}
-      draggable={draggable}
-      onDragStart={draggable ? handleDragStart : undefined}
+      onClick={preview ? undefined : () => onTileClick?.(data)}
+      draggable={draggable && !preview}
+      onDragStart={draggable && !preview ? handleDragStart : undefined}
+      onDragEnd={draggable && !preview ? onDragEnd : undefined}
+      $preview={preview}
+      aria-hidden={preview || undefined}
+      tabIndex={preview ? -1 : undefined}
     >
       <StyledTextWrapper>
         <StyledStickyWrapper>

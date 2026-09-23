@@ -14,8 +14,8 @@ const LeftColumnItem: FC<LeftColumnItemProps> = ({ id, item, rows, onItemClick }
   return (
     <StyledWrapper
       title={item.title + " | " + item.subtitle}
-      clickable={typeof onItemClick === "function"}
-      rows={rows}
+      $clickable={typeof onItemClick === "function"}
+      $rows={rows}
       onClick={() => onItemClick?.({ id, label: item })}
     >
       <StyledInnerWrapper>
@@ -27,7 +27,7 @@ const LeftColumnItem: FC<LeftColumnItemProps> = ({ id, item, rows, onItemClick }
           )}
         </StyledImageWrapper>
         <StyledTextWrapper>
-          <StyledText isMain>{item.title}</StyledText>
+          <StyledText $isMain>{item.title}</StyledText>
           <StyledText>{item.subtitle}</StyledText>
         </StyledTextWrapper>
       </StyledInnerWrapper>

@@ -3,10 +3,10 @@ import { Theme } from "@/styles";
 import { IconButtonVariant } from "./types";
 
 type ButtonWrapperProps = {
-  isFullRounded?: boolean;
-  hasChildren?: boolean;
+  $isFullRounded?: boolean;
+  $hasChildren?: boolean;
   disabled?: boolean;
-  variant: IconButtonVariant;
+  $variant: IconButtonVariant;
 };
 
 const variantStyles = (theme: Theme, variant: IconButtonVariant, disabled?: boolean) =>
@@ -30,11 +30,11 @@ export const ButtonWrapper: IStyledComponent<any, any> = styled.button<ButtonWra
   justify-content: center;
   min-width: 24px;
   min-height: 24px;
-  border-radius: ${({ isFullRounded }) => (isFullRounded ? "50%" : "4px")};
+  border-radius: ${({ $isFullRounded }) => ($isFullRounded ? "50%" : "4px")};
   cursor: ${({ disabled }) => (disabled ? "auto" : "pointer")};
   font-size: 14px;
   gap: 4px;
-  padding: ${({ hasChildren }) => (hasChildren ? "0 10px" : "0")};
+  padding: ${({ $hasChildren }) => ($hasChildren ? "0 10px" : "0")};
   transition: 0.5s ease;
-  ${({ theme, variant, disabled }) => variantStyles(theme, variant, disabled)}
+  ${({ theme, $variant, disabled }) => variantStyles(theme, $variant, disabled)}
 `;

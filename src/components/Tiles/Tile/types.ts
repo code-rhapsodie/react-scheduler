@@ -13,5 +13,5 @@ export type TileProps = {
 };
 
 export type StyledTextProps = {
-  bold?: boolean;
+  $bold?: boolean;
 };

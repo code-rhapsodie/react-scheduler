@@ -4,7 +4,7 @@ import { StyledWalker, StyledWrapper } from "./styles";
 
 const Loader: FC<LoaderProps> = ({ isLoading, position }) => {
   return isLoading ? (
-    <StyledWrapper position={position}>
+    <StyledWrapper $position={position}>
       <StyledWalker />
     </StyledWrapper>
   ) : null;

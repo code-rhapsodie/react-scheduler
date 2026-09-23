@@ -25,7 +25,7 @@ const LeftColumn: FC<LeftColumnProps> = ({
   return (
     <StyledWrapper>
       <StyledLeftColumnHeader>
-        <StyledInputWrapper isFocused={isInputFocused}>
+        <StyledInputWrapper $isFocused={isInputFocused}>
           <StyledInput
             placeholder={search}
             value={searchInputValue}

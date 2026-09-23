@@ -253,7 +253,7 @@ export function Grid({
   return (
     <StyledWrapper id={canvasWrapperId} ref={wrapperRef}>
       <StyledInnerWrapper ref={setInnerRef}>
-        <StyledSpan position="left" ref={refLeft} />
+        <StyledSpan $position="left" ref={refLeft} />
         <Loader isLoading={isLoading} position="left" />
         <StyledCanvas
           ref={canvasRef}
@@ -272,7 +272,7 @@ export function Grid({
             }}
           />
         )}
-        <StyledSpan ref={refRight} position="right" />
+        <StyledSpan ref={refRight} $position="right" />
         <Loader isLoading={isLoading} position="right" />
       </StyledInnerWrapper>
     </StyledWrapper>

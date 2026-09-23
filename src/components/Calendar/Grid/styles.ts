@@ -47,8 +47,8 @@ export const StyledSpan: IStyledComponent<any, any> = styled.span<StyledSpanProp
   height: 100%;
   position: absolute;
   top: 0;
-  left: ${({ position }) => (position === "left" ? 0 : "auto")};
-  right: ${({ position }) => (position === "right" ? 0 : "auto")};
+  left: ${({ $position }) => ($position === "left" ? 0 : "auto")};
+  right: ${({ $position }) => ($position === "right" ? 0 : "auto")};
 `;
 
 export const StyledSelectedCell: IStyledComponent<any, any> = styled.div`

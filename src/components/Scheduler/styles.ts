@@ -9,7 +9,7 @@ export const StyledOutsideWrapper: IStyledComponent<any, any> =
     left: 0;
     right: 0;
     display: flex;
-    overflow-x: ${({ showScroll }) => (showScroll ? "scroll" : "hidden")};
+    overflow-x: ${({ $showScroll }) => ($showScroll ? "scroll" : "hidden")};
     background-color: ${({ theme }) => theme.colors.gridBackground};
   `;
 export const StyledInnerWrapper: IStyledComponent<any, any> = styled.div`

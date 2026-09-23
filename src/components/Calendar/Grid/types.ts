@@ -22,5 +22,5 @@ export type GridProps = {
 };
 
 export type StyledSpanProps = {
-  position: "left" | "right";
+  $position: "left" | "right";
 };

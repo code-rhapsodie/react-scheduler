@@ -10,7 +10,9 @@ export const ptBR = {
     next: "próximo",
     prev: "anterior",
     today: "hoje",
-    view: "visualização"
+    view: "visualização",
+    zoomLevels: ["Semanas", "Dias", "Horas"] as string[],
+    toggleTheme: "Alternar tema"
   },
   search: "Procurar",
   week: "Semana"

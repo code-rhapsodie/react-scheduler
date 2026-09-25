@@ -1,6 +1,8 @@
 import dayjs from "dayjs";
 import { Day } from "@/types/global";
 import {
+  dayNameYoffset,
+  dayNumYOffset,
   fonts,
   headerDayHeight,
   headerHeight,
@@ -20,8 +22,8 @@ export const drawWeeksOnBottom = (
   weekLabel: string,
   theme: Theme
 ): void => {
-  const dayNameYPos = headerHeight - headerDayHeight / 1.6;
-  const dayNumYPos = headerHeight - headerDayHeight / 4.5;
+  const dayNameYPos = headerHeight - headerDayHeight / dayNameYoffset;
+  const dayNumYPos = headerHeight - headerDayHeight / dayNumYOffset;
   const yPos = headerMonthHeight + headerWeekHeight;
   let xPos = 0;
 
@@ -43,15 +45,20 @@ export const drawWeeksOnBottom = (
         fillStyle: getBoxFillStyle({ isCurrent: isCurrWeek, variant: "yearView" }, theme),
         topText: {
           y: dayNameYPos,
-          label: week.isoWeek().toString(),
+          label: weekLabel.toUpperCase(),
           font: fonts.bottomRow.name,
-          color: getTextStyle({ isCurrent: isCurrWeek }, theme)
+          letterSpacing: "0.6px",
+          color: getTextStyle(
+            { isCurrent: isCurrWeek, isBusinessDay: true, variant: "bottomRow" },
+            theme
+          )
         },
         bottomText: {
           y: dayNumYPos,
-          label: weekLabel.toUpperCase(),
-          font: fonts.middleRow,
-          color: theme.colors.placeholder
+          label: week.isoWeek().toString(),
+          font: fonts.bottomRow.number,
+          circleColor: isCurrWeek ? theme.colors.accent : undefined,
+          color: getTextStyle({ isCurrent: isCurrWeek, isBusinessDay: true }, theme)
         }
       },
       theme

@@ -1,3 +1,14 @@
+# Unreleased
+
+- redesigned the UI: top bar with a segmented zoom selector, chevron navigation and a round theme toggle, frosted sticky left column with initials avatars, restyled tiles, tooltip, loader and pagination buttons
+- redesigned the grid and header: clearer weekends, highlighted current day with a round day number marker, dimmed off-hours in the hourly view, and header labels that stay visible while scrolling horizontally
+- added a mobile layout below 768px wide
+- added `onThemeChange` config callback, called when the theme toggle switches the theme
+- added `zoomLevels` and `toggleTheme` topbar translations, in every built-in language
+- tile text colour now supports `rgb()` / `rgba()` and `#rgb` backgrounds (it was always white with these formats), and can be forced through the tile `style.color`
+- fixed tiles starting a few hours before the first visible day being placed one day too far right
+- fixed the left column tooltip showing `undefined` when a row has no subtitle
+
 # Release v0.5.0
 
 - added `onCellClick` callback, fired when clicking an empty cell of a resource row

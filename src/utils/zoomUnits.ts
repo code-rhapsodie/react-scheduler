@@ -1,5 +1,6 @@
 import dayjs from "dayjs";
-import { dayWidth, weekWidth, zoom2ColumnWidth } from "@/constants";
+import { weekWidth, zoom2ColumnWidth } from "@/constants";
+import { getDayWidth } from "@/utils/getDayWidth";
 
 export const getCellWidth = (zoom: number): number => {
   switch (zoom) {
@@ -8,7 +9,7 @@ export const getCellWidth = (zoom: number): number => {
     case 2:
       return zoom2ColumnWidth;
     default:
-      return dayWidth;
+      return getDayWidth();
   }
 };
 

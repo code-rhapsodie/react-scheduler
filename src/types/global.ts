@@ -51,6 +51,10 @@ export type Config = {
    * @default "light"
    */
   defaultTheme?: "light" | "dark";
+  /**
+   * called when the theme toggle switches the theme
+   */
+  onThemeChange?: (mode: "light" | "dark") => void;
   theme?: Theme;
 };
 
@@ -148,6 +152,9 @@ type BottomRowText = {
   label: string;
   font: string;
   color: string;
+  letterSpacing?: string;
+  // draws a filled circle behind the text (e.g. today's day number)
+  circleColor?: string;
 };
 
 export type DrawRowConfig = {
@@ -164,6 +171,9 @@ export type DrawRowConfig = {
   topText?: BottomRowText;
   bottomText?: BottomRowText;
   labelBetweenCells?: boolean;
+  color?: string;
+  letterSpacing?: string;
+  align?: "left" | "center";
 };
 
 export type TileProperties = {

@@ -1,5 +1,5 @@
 import styled, { IStyledComponent } from "styled-components";
-import { leftColumnWidth } from "@/constants";
+import { leftColumnWidth, leftColumnWidthCss } from "@/constants";
 
 export const StyledOuterWrapper: IStyledComponent<any, any> = styled.div`
   position: relative;
@@ -15,11 +15,11 @@ export const StyledInnerWrapper: IStyledComponent<any, any> = styled.div`
 `;
 
 export const StyledEmptyBoxWrapper: IStyledComponent<any, any> = styled.div<{ width: number }>`
-  width: calc(${({ width }) => width}px - ${leftColumnWidth}px);
+  width: calc(${({ width }) => width}px - ${leftColumnWidthCss});
   position: sticky;
   top: 0;
   height: 100%;
-  left: ${leftColumnWidth}px;
+  left: ${leftColumnWidthCss};
   display: flex;
   justify-content: center;
   align-items: center;

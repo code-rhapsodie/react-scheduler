@@ -42,7 +42,9 @@ const Scheduler = ({
   const defaultStartDate = useMemo(() => dayjs(startDate), [startDate]);
   const [themeMode, setThemeMode] = useState<"light" | "dark">(appConfig.defaultTheme ?? "light");
   const toggleTheme = () => {
-    themeMode === "light" ? setThemeMode("dark") : setThemeMode("light");
+    const nextMode = themeMode === "light" ? "dark" : "light";
+    setThemeMode(nextMode);
+    appConfig.onThemeChange?.(nextMode);
   };
 
   const currentTheme = themeMode === "light" ? theme : darkTheme;

@@ -1,4 +1,5 @@
-import { dayWidth, minutesInHour, singleDayWidth, zoom2ColumnWidth } from "@/constants";
+import { minutesInHour, singleDayWidth, zoom2ColumnWidth } from "@/constants";
+import { getDayWidth } from "@/utils/getDayWidth";
 import { DatesRange } from "./getDatesRange";
 
 export const getTileXAndWidth = (
@@ -15,7 +16,7 @@ export const getTileXAndWidth = (
       cellWidth = zoom2ColumnWidth;
       break;
     default:
-      cellWidth = dayWidth;
+      cellWidth = getDayWidth();
   }
   const getX = () => {
     let position;
@@ -26,7 +27,10 @@ export const getTileXAndWidth = (
           cellWidth / 2;
         break;
       default: {
-        position = (item.startDate.diff(range.startDate, "day") + 1) * cellWidth;
+        // floor rather than truncate: an item starting a few hours before the range start
+        // (same day) must land on the previous column, not on the first one
+        position =
+          (Math.floor(item.startDate.diff(range.startDate, "day", true)) + 1) * cellWidth;
       }
     }
     return Math.max(0, position);

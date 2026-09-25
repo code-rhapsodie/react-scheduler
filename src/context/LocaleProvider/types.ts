@@ -17,6 +17,11 @@ export type Topbar = {
   prev: string;
   today: string;
   view: string;
+  /**
+   * labels of the zoom levels, from the widest (weeks) to the narrowest (hours)
+   */
+  zoomLevels?: string[];
+  toggleTheme?: string;
 };
 
 export type Translation = {

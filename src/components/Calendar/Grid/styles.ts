@@ -56,7 +56,7 @@ export const StyledSelectedCell: IStyledComponent<any, any> = styled.div`
   pointer-events: none;
   box-sizing: border-box;
   border: 2px solid ${({ theme }) => theme.colors.accent};
-  background-color: ${({ theme }) => theme.colors.tertiary};
-  opacity: 0.5;
-  border-radius: 4px;
+  background-color: ${({ theme }) => `color-mix(in srgb, ${theme.colors.accent} 12%, transparent)`};
+  border-radius: 6px;
+  box-shadow: 0 0 0 3px ${({ theme }) => `color-mix(in srgb, ${theme.colors.accent} 15%, transparent)`};
 `;

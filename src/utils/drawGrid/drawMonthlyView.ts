@@ -1,6 +1,7 @@
 import dayjs from "dayjs";
 import { Day } from "@/types/global";
-import { boxHeight, dayWidth } from "@/constants";
+import { boxHeight } from "@/constants";
+import { getDayWidth } from "@/utils/getDayWidth";
 import { Theme } from "@/styles";
 import { getIsBusinessDay } from "../dates";
 import { drawCell } from "./drawCell";
@@ -23,9 +24,9 @@ export const drawMonthlyView = (
 
       drawCell(
         ctx,
-        y * dayWidth,
+        y * getDayWidth(),
         i * boxHeight,
-        dayWidth,
+        getDayWidth(),
         getIsBusinessDay(date),
         isCurrentDay,
         theme

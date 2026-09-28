@@ -1,3 +1,7 @@
+# Unreleased
+
+- the Inter font is now bundled with the package (latin and latin-ext subsets, weights 400 to 800) instead of loaded from Google Fonts, so the scheduler no longer makes any request to a third-party server
+
 # Release v0.6.0
 
 - redesigned the UI: top bar with a segmented zoom selector, chevron navigation and a round theme toggle, frosted sticky left column with initials avatars, restyled tiles, tooltip, loader and pagination buttons

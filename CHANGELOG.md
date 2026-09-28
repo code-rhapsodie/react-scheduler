@@ -1,4 +1,4 @@
-# Unreleased
+# Release v0.6.1
 
 - the Inter font is now bundled with the package (latin and latin-ext subsets, weights 400 to 800) instead of loaded from Google Fonts, so the scheduler no longer makes any request to a third-party server
 

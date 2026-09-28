@@ -1,4 +1,4 @@
-# Unreleased
+# Release v0.6.0
 
 - redesigned the UI: top bar with a segmented zoom selector, chevron navigation and a round theme toggle, frosted sticky left column with initials avatars, restyled tiles, tooltip, loader and pagination buttons
 - redesigned the grid and header: clearer weekends, highlighted current day with a round day number marker, dimmed off-hours in the hourly view, and header labels that stay visible while scrolling horizontally

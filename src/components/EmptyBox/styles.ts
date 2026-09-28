@@ -11,8 +11,9 @@ export const StyledText: IStyledComponent<any, any> = styled.p`
   top: 75%;
   left: 50%;
   transform: translateX(-50%);
-  font-size: 20px;
-  letter-spacing: 1px;
-  line-height: 1px;
-  color: ${({ theme }) => theme.colors.textPrimary};
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.4;
+  white-space: nowrap;
+  color: ${({ theme }) => theme.colors.placeholder};
 `;

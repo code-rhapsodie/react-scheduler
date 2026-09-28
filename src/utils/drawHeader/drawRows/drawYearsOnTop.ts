@@ -35,7 +35,9 @@ export const drawYearsOnTop = (
         height: headerMonthHeight,
         textYPos: topRowTextYPos,
         label: (year + index).toString(),
-        font: fonts.topRow
+        font: fonts.topRow,
+        color: theme.colors.textPrimary,
+        align: "left"
       },
       theme
     );

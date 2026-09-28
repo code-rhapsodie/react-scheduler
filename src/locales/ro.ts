@@ -10,7 +10,9 @@ export const ro = {
     next: "Următorul",
     prev: "Anterior",
     today: "Astăzi",
-    view: "Vizualizare"
+    view: "Vizualizare",
+    zoomLevels: ["Săptămâni", "Zile", "Ore"] as string[],
+    toggleTheme: "Schimbă tema"
   },
   search: "Căutare",
   week: "Săptămână"

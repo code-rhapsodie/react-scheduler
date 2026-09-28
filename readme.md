@@ -184,6 +184,7 @@ const mockedSchedulerData: SchedulerData = [
 | translations                         | `LocaleType[]`                                                   | `undefined` | option to add specific langs translations                                                                                                                              |
 | showThemeToggle                      | `boolean`                                                        | `false`     | show toggle button to switch between light/dark mode                                                                                                                   |
 | defaultTheme                         | `light` or `dark`                                                | `light`     | scheduler's default theme                                                                                                                                              |
+| onThemeChange                        | `(mode: "light" \| "dark") => void`                              | `undefined` | called when the theme toggle switches the theme, e.g. to persist the user's choice                                                                                     |
 
 #### Translation object example
 
@@ -205,7 +206,9 @@ const langs: LocaleType[] = [
         next: "next",
         prev: "prev",
         today: "Today",
-        view: "View"
+        view: "View",
+        zoomLevels: ["Weeks", "Days", "Hours"],
+        toggleTheme: "Toggle theme"
       },
       search: "search",
       week: "week"
@@ -249,13 +252,15 @@ const langs: LocaleType[] = [
 
 ##### Scheduler Topbar Object
 
-| Property Name | Type     |
-| ------------- | -------- |
-| filters       | `string` |
-| next          | `string` |
-| prev          | `string` |
-| today         | `string` |
-| view          | `string` |
+| Property Name | Type                  | Description                                                                              |
+| ------------- | --------------------- | ---------------------------------------------------------------------------------------- |
+| filters       | `string`              | label of the filter button                                                               |
+| next          | `string`              | label of the next period button                                                          |
+| prev          | `string`              | label of the previous period button                                                      |
+| today         | `string`              | label of the today button                                                                |
+| view          | `string`              | accessible label of the zoom level selector                                              |
+| zoomLevels    | `string[] (optional)` | labels of the zoom levels, from weeks to hours. Defaults to `["Weeks", "Days", "Hours"]` |
+| toggleTheme   | `string (optional)`   | label of the theme toggle button. Defaults to `"Toggle theme"`                           |
 
 ##### Scheduler Data
 
@@ -280,18 +285,18 @@ data that is accessible as argument of `onItemClick` callback
 
 item that will be visible on the grid as tile and that will be accessible as argument of `onTileClick` event
 
-| Property Name | Type                       | Description                                                                                             |
-| ------------- | -------------------------- | ------------------------------------------------------------------------------------------------------- |
-| id            | `string`                   | unique resource id                                                                                      |
-| title         | `string`                   | resource title that will be displayed on resource tile                                                  |
-| subtitle      | `string (optional)`        | resource subtitle that will be displayed on resource tile                                               |
-| description   | `string (optional)`        | resource description that will be displayed on resource tile                                            |
-| startDate     | `Date`                     | date for calculating start position for resource                                                        |
-| endDate       | `Date`                     | date for calculating end position for resource                                                          |
-| occupancy     | `number`                   | number of seconds resource takes up for given row that will be visible on resource tooltip when hovered |
-| bgColor       | `string (optional)`        | tile color                                                                                              |
-| draggable     | `boolean (optional)`       | whether the tile can be dragged when `onTileMove` is provided. Defaults to `true`                       |
-| style         | `CSSProperties (optional)` | additional inline styles applied to the tile (e.g. `backgroundImage`), overriding the default ones      |
+| Property Name | Type                       | Description                                                                                                                             |
+| ------------- | -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| id            | `string`                   | unique resource id                                                                                                                      |
+| title         | `string`                   | resource title that will be displayed on resource tile                                                                                  |
+| subtitle      | `string (optional)`        | resource subtitle that will be displayed on resource tile                                                                               |
+| description   | `string (optional)`        | resource description that will be displayed on resource tile                                                                            |
+| startDate     | `Date`                     | date for calculating start position for resource                                                                                        |
+| endDate       | `Date`                     | date for calculating end position for resource                                                                                          |
+| occupancy     | `number`                   | number of seconds resource takes up for given row that will be visible on resource tooltip when hovered                                 |
+| bgColor       | `string (optional)`        | tile color, as hex (`#rgb`, `#rrggbb`) or `rgb()` / `rgba()`. The text is dark or white depending on it                                 |
+| draggable     | `boolean (optional)`       | whether the tile can be dragged when `onTileMove` is provided. Defaults to `true`                                                       |
+| style         | `CSSProperties (optional)` | additional inline styles applied to the tile (e.g. `backgroundImage`, or `color` to force the text colour), overriding the default ones |
 
 ### Cell selection and drag & drop
 
@@ -389,6 +394,10 @@ All these types (`CellClickData`, `CellRangeSelectData`, `SelectedRange`, `TileM
 ### Navigation transitions
 
 Moving to the previous or next period with the top bar buttons now plays a short slide animation on the grid, in the direction of the navigation.
+
+### Mobile layout
+
+Below 768px wide, the scheduler switches to a compact layout: narrower day columns and left column, avatars hidden, the search field collapsed into a button, and the previous / next buttons, zoom selector and theme toggle hidden from the top bar. The rows can still be scrolled horizontally.
 
 ### Troubleshooting
 

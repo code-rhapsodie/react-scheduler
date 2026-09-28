@@ -2,7 +2,8 @@ import dayjs from "dayjs";
 import { DragEvent, JSX, MouseEvent, useCallback, useEffect, useRef, useState } from "react";
 import { useTheme } from "styled-components";
 import { drawGrid } from "@/utils/drawGrid/drawGrid";
-import { boxHeight, canvasWrapperId, leftColumnWidth, outsideWrapperId } from "@/constants";
+import { boxHeight, canvasWrapperId, outsideWrapperId } from "@/constants";
+import { getLeftColumnWidth } from "@/utils/getLeftColumnWidth";
 import { Loader, Tile, Tiles } from "@/components";
 import { TileDragStart } from "@/components/Tiles/types";
 import { SchedulerProjectData } from "@/types/global";
@@ -74,6 +75,10 @@ export function Grid({
   const theme = useTheme();
 
   const rowsPerPerson = data.map((person) => Math.max(person.data.length, 1));
+  // redraw the grid only when the person boundaries actually change
+  const rowsPerPersonKey = rowsPerPerson.join(",");
+  const rowsPerPersonRef = useRef(rowsPerPerson);
+  rowsPerPersonRef.current = rowsPerPerson;
 
   const highlightRect = dragSelection
     ? getCellRangeRect(
@@ -250,9 +255,9 @@ export function Grid({
       const width = getCanvasWidth();
       const height = rows * boxHeight + 1;
       resizeCanvas(ctx, width, height);
-      drawGrid(ctx, zoom, rows, cols, startDate, theme);
+      drawGrid(ctx, zoom, rows, cols, startDate, theme, rowsPerPersonRef.current);
     },
-    [cols, startDate, rows, zoom, theme]
+    [cols, startDate, rows, zoom, theme, rowsPerPersonKey]
   );
 
   useEffect(() => {
@@ -260,7 +265,6 @@ export function Grid({
     const canvas = canvasRef.current;
     if (!wrapper || !canvas) return;
 
-    canvas.style.letterSpacing = "1px";
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
@@ -300,7 +304,7 @@ export function Grid({
       (e) => (e[0].isIntersecting ? handleScrollPrev() : null),
       {
         root: document.getElementById(outsideWrapperId),
-        rootMargin: `0px 0px 0px -${leftColumnWidth}px`
+        rootMargin: `0px 0px 0px -${getLeftColumnWidth()}px`
       }
     );
     observerLeft.observe(refLeft.current);

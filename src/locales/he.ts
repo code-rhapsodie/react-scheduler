@@ -10,7 +10,9 @@ export const he = {
     next: "הבא",
     prev: "הקודם",
     today: "היום",
-    view: "תצוגה"
+    view: "תצוגה",
+    zoomLevels: ["שבועות", "ימים", "שעות"] as string[],
+    toggleTheme: "החלפת ערכת נושא"
   },
   search: "חיפוש",
   week: "שבוע"

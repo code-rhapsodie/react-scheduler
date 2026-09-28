@@ -8,8 +8,7 @@ export const StyledWrapper: IStyledComponent<any, any> = styled.div<StyledWrappe
   top: 0;
   left: ${({ $position }) => ($position === "left" ? 0 : "auto")};
   right: ${({ $position }) => ($position === "right" ? 0 : "auto")};
-  background-color: ${({ theme }) => theme.colors.secondary};
-  opacity: 0.7;
+  background-color: ${({ theme }) => `color-mix(in srgb, ${theme.colors.background} 70%, transparent)`};
   overflow: hidden;
   z-index: 1;
 `;
@@ -26,6 +25,7 @@ export const StyledWalker: IStyledComponent<any, any> = styled.div`
   width: inherit;
   height: 100%;
   position: absolute;
-  background: linear-gradient(90deg, #e6f3ff 1%, #9ec4e7 50%, #e6f3ff 100%);
-  animation: ${move} 1s infinite;
+  background: ${({ theme }) =>
+    `linear-gradient(90deg, transparent, color-mix(in srgb, ${theme.colors.accent} 14%, transparent) 50%, transparent)`};
+  animation: ${move} 1.4s ease-in-out infinite;
 `;

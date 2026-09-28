@@ -36,7 +36,9 @@ export const drawMonthsInMiddle = (
         height: headerWeekHeight,
         textYPos: middleRowTextYPos,
         label: dayjs().month(index).format("MMMM").toUpperCase(),
-        font: fonts.bottomRow.number
+        font: fonts.middleRow,
+        letterSpacing: "0.6px",
+        align: "left"
       },
       theme
     );

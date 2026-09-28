@@ -3,6 +3,8 @@ import Subtract from "./svgs/subtract.svg?react";
 import Filter from "./svgs/filter.svg?react";
 import ArrowLeft from "./svgs/arrow-left.svg?react";
 import ArrowRight from "./svgs/arrow-right.svg?react";
+import ChevronLeft from "./svgs/chevron-left.svg?react";
+import ChevronRight from "./svgs/chevron-right.svg?react";
 import DefaultAvatar from "./svgs/default-avatar.svg?react";
 import CalendarWarning from "./svgs/calendar-warning.svg?react";
 import CalendarFree from "./svgs/calendar-free.svg?react";
@@ -20,6 +22,8 @@ const icons: Record<IconsNames, Icon> = {
   filter: Filter,
   arrowLeft: ArrowLeft,
   arrowRight: ArrowRight,
+  chevronLeft: ChevronLeft,
+  chevronRight: ChevronRight,
   defaultAvatar: DefaultAvatar,
   calendarWarning: CalendarWarning,
   calendarFree: CalendarFree,

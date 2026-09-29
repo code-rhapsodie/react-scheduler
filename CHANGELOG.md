@@ -1,3 +1,9 @@
+# Release v0.6.3
+
+- fixed the grid jumping after a strong swipe: the previous / next period is now loaded once the scroll, including swipe momentum, has settled
+- loading no longer blocks the infinite scroll: when the scroll goes past the period being loaded, `onRangeChange` is called again with the new range while `isLoading` is still true, so the consumer can cancel or ignore the pending request (e.g. with an `AbortController`)
+- fixed the infinite scroll no longer loading after a touch whose end was missed
+
 # Release v0.6.2
 
 - fixed the grid jumping when scrolling horizontally past the rendered period: the scroll position is now shifted by exactly the width of the added columns, so the visible dates stay in place

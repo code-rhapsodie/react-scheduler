@@ -395,7 +395,7 @@ All these types (`CellClickData`, `CellRangeSelectData`, `SelectedRange`, `TileM
 
 Moving to the previous or next period with the top bar buttons now plays a short slide animation on the grid, in the direction of the navigation.
 
-Scrolling horizontally loads the previous or next period shortly before reaching the edge of the grid, and keeps the visible dates in place while the new columns are added, so the scroll stays continuous. `onRangeChange` is called with the new range, and further loads wait until `isLoading` is back to `false`.
+Scrolling horizontally loads the previous or next period shortly before reaching the edge of the grid, once the scroll (including the momentum of a swipe) has settled, and keeps the visible dates in place while the new columns are added, so the scroll stays continuous. `onRangeChange` is called with the new range. Loading does not block the infinite scroll: when the scroll goes past the range being loaded, `onRangeChange` is called again with the new range while `isLoading` is still `true`, so cancel or ignore the pending request (for example with an `AbortController`) to only display the data of the latest range.
 
 ### Mobile layout
 

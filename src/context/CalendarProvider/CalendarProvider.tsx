@@ -205,11 +205,12 @@ const CalendarProvider = ({
     onRangeChange?.(range);
   };
 
+  // infinite scroll keeps loading while a previous range is still loading: when the scroll goes past
+  // the loading range, onRangeChange is called again with the new one, the consumer can cancel the
+  // pending request
   const handleScrollNext = useCallback(() => {
-    if (isLoading) return;
-
     loadMore("forward");
-  }, [isLoading, loadMore]);
+  }, [loadMore]);
 
   const handleGoPrev = () => {
     if (isLoading) return;
@@ -222,9 +223,9 @@ const CalendarProvider = ({
   };
 
   const handleScrollPrev = useCallback(() => {
-    if (!isInitialized || isLoading) return;
+    if (!isInitialized) return;
     loadMore("back");
-  }, [isInitialized, isLoading, loadMore]);
+  }, [isInitialized, loadMore]);
 
   const handleGoToday = useCallback(() => {
     if (isLoading) return;

@@ -47,6 +47,9 @@ type DragSelection = {
 // kept under half the visible width so the compensated position does not trigger the opposite edge
 const getLoadAheadMargin = (): number => Math.round(getCanvasWidth() / screenWidthMultiplier / 4);
 
+// time without scroll event after which a swipe, a fling or a wheel scroll is considered over
+const scrollIdleDelay = 150;
+
 export function Grid({
   zoom,
   rows,
@@ -301,10 +304,86 @@ export function Grid({
     el.classList.add(navigation.direction === "next" ? "slide-next" : "slide-prev");
   }, [navigation]);
 
+  // the adjacent period is only loaded once the scroll has settled: shifting the scroll position
+  // during a fling is overridden by the momentum on some browsers (iOS Safari), the added columns
+  // then make the visible dates jump by a whole period
+  const edgeVisible = useRef({ next: false, prev: false });
+  const isScrolling = useRef(false);
+  const loadVisibleEdge = useRef(() => {});
+  loadVisibleEdge.current = () => {
+    if (isScrolling.current) return;
+    if (edgeVisible.current.next) handleScrollNext();
+    else if (edgeVisible.current.prev) handleScrollPrev();
+  };
+
+  useEffect(() => {
+    const scroller = document.getElementById(outsideWrapperId);
+    if (!scroller) return;
+
+    let idleTimer: ReturnType<typeof setTimeout> | undefined;
+    let isTouching = false;
+    const waitForIdle = () => {
+      clearTimeout(idleTimer);
+      idleTimer = setTimeout(() => {
+        if (isTouching) return;
+        isScrolling.current = false;
+        loadVisibleEdge.current();
+      }, scrollIdleDelay);
+    };
+    const onScroll = () => {
+      isScrolling.current = true;
+      waitForIdle();
+    };
+    // a touch end is listened on the touched element: it always receives it, while it doesn't bubble to the
+    // scroller when the element has been removed by a re-render during the touch
+    const touchTargets = new Set<EventTarget>();
+    const onTouchEnd = (e: TouchEvent) => {
+      if (e.touches.length > 0) return;
+      endTouch();
+      waitForIdle();
+    };
+    const endTouch = () => {
+      isTouching = false;
+      touchTargets.forEach((target) => {
+        target.removeEventListener("touchend", onTouchEnd as EventListener);
+        target.removeEventListener("touchcancel", onTouchEnd as EventListener);
+      });
+      touchTargets.clear();
+    };
+    const onTouchStart = (e: TouchEvent) => {
+      isTouching = true;
+      isScrolling.current = true;
+      clearTimeout(idleTimer);
+      if (!e.target || touchTargets.has(e.target)) return;
+      touchTargets.add(e.target);
+      e.target.addEventListener("touchend", onTouchEnd as EventListener, { passive: true });
+      e.target.addEventListener("touchcancel", onTouchEnd as EventListener, { passive: true });
+    };
+    // a wheel scroll means no finger is on the screen, in case a touch end was still missed
+    const onWheel = () => {
+      if (isTouching) endTouch();
+    };
+
+    scroller.addEventListener("scroll", onScroll, { passive: true });
+    scroller.addEventListener("wheel", onWheel, { passive: true });
+    scroller.addEventListener("touchstart", onTouchStart, { passive: true });
+
+    return () => {
+      clearTimeout(idleTimer);
+      endTouch();
+      scroller.removeEventListener("scroll", onScroll);
+      scroller.removeEventListener("wheel", onWheel);
+      scroller.removeEventListener("touchstart", onTouchStart);
+    };
+  }, []);
+
   useEffect(() => {
     if (!refRight.current) return;
     const observerRight = new IntersectionObserver(
-      (e) => (e[0].isIntersecting ? handleScrollNext() : null),
+      (e) => {
+        edgeVisible.current.next = e[e.length - 1].isIntersecting;
+        loadVisibleEdge.current();
+      },
       {
         root: document.getElementById(outsideWrapperId),
         rootMargin: `0px ${getLoadAheadMargin()}px 0px 0px`
@@ -318,7 +397,10 @@ export function Grid({
   useEffect(() => {
     if (!refLeft.current) return;
     const observerLeft = new IntersectionObserver(
-      (e) => (e[0].isIntersecting ? handleScrollPrev() : null),
+      (e) => {
+        edgeVisible.current.prev = e[e.length - 1].isIntersecting;
+        loadVisibleEdge.current();
+      },
       {
         root: document.getElementById(outsideWrapperId),
         rootMargin: `0px 0px 0px ${getLoadAheadMargin() - getLeftColumnWidth()}px`

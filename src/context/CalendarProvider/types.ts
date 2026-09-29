@@ -14,6 +14,8 @@ export type CalendarContextType = {
   changeZoom: (zoomLevel: number) => void;
   handleFilterData: () => void;
   updateTilesCoords: (coords: Coords[]) => void;
+  /** Shifts the horizontal scroll to compensate the columns added by an infinite scroll load. */
+  applyScrollAnchor: () => void;
   onClearFilterData?: () => void;
   data?: SchedulerData;
   tilesCoords: Coords[];

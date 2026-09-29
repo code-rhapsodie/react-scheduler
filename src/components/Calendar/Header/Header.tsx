@@ -1,4 +1,4 @@
-import { FC, useCallback, useEffect, useRef } from "react";
+import { FC, useCallback, useEffect, useLayoutEffect, useRef } from "react";
 import { useTheme } from "styled-components";
 import {
   headerHeight,
@@ -18,7 +18,7 @@ import Topbar from "./Topbar";
 
 const Header: FC<HeaderProps> = ({ zoom, topBarWidth, showThemeToggle, toggleTheme }) => {
   const { week } = useLanguage();
-  const { date, cols, dayOfYear, startDate } = useCalendar();
+  const { date, cols, dayOfYear, startDate, applyScrollAnchor } = useCalendar();
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const theme = useTheme();
@@ -70,14 +70,16 @@ const Header: FC<HeaderProps> = ({ zoom, topBarWidth, showThemeToggle, toggleThe
     };
   }, [cols, dayOfYear, startDate, week, zoom, theme]);
 
-  useEffect(() => {
+  // layout effect: the new dates must be drawn in the same frame as the scroll compensation
+  useLayoutEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
+    applyScrollAnchor();
     handleResize(ctx);
-  }, [date, zoom, handleResize]);
+  }, [date, zoom, handleResize, applyScrollAnchor]);
 
   return (
     <StyledOuterWrapper>

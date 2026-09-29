@@ -1,3 +1,10 @@
+# Release v0.6.2
+
+- fixed the grid jumping when scrolling horizontally past the rendered period: the scroll position is now shifted by exactly the width of the added columns, so the visible dates stay in place
+- the previous / next period is now loaded as soon as the edge is approached, without the 300ms delay, so a fast scroll no longer stops against the end of the grid
+- the grid and header canvases are redrawn before paint, so they never briefly show the previous dates
+- modernized the loading animation: the loading edge now fades softly into the grid with a subtle shimmer and a thin indeterminate progress bar in the accent colour, and it respects `prefers-reduced-motion`
+
 # Release v0.6.1
 
 - the Inter font is now bundled with the package (latin and latin-ext subsets, weights 400 to 800) instead of loaded from Google Fonts, so the scheduler no longer makes any request to a third-party server

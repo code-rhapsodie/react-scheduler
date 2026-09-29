@@ -1,4 +1,13 @@
-import { JSX, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
+import {
+  JSX,
+  useCallback,
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState
+} from "react";
 import dayjs from "dayjs";
 import weekOfYear from "dayjs/plugin/weekOfYear";
 import dayOfYear from "dayjs/plugin/dayOfYear";
@@ -19,6 +28,7 @@ import {
   zoom2ButtonJump
 } from "@/constants";
 import { getCanvasWidth } from "@/utils/getCanvasWidth";
+import { getCellTimeUnit, getCellWidth } from "@/utils/zoomUnits";
 import { calendarContext } from "./calendarContext";
 import { CalendarContextType, CalendarProviderProps } from "./types";
 import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
@@ -67,18 +77,6 @@ const CalendarProvider = ({
     (direction: Direction, behavior: ScrollBehavior = "auto") => {
       const canvasWidth = getCanvasWidth();
       switch (direction) {
-        case "back":
-          return outsideWrapper.current?.scrollTo({
-            behavior,
-            left: canvasWidth / 3
-          });
-
-        case "forward":
-          return outsideWrapper.current?.scrollTo({
-            behavior,
-            left: canvasWidth / 3
-          });
-
         case "middle": {
           const leftOffset = canvasWidth / screenWidthMultiplier / 4; // 1/4 of component's width
           return outsideWrapper.current?.scrollTo({
@@ -96,6 +94,30 @@ const CalendarProvider = ({
     },
     []
   );
+
+  // start date shown before an infinite scroll load, used to shift the scroll position by
+  // exactly the width of the added columns so the visible dates don't jump
+  const scrollAnchor = useRef<Date | null>(null);
+  const currentStart = useRef({ startDate, zoom });
+  currentStart.current = { startDate, zoom };
+
+  const applyScrollAnchor = useCallback(() => {
+    const anchor = scrollAnchor.current;
+    const scroller = outsideWrapper.current;
+    const { startDate: newStartDate, zoom: currentZoom } = currentStart.current;
+    if (!anchor || !scroller || anchor.getTime() === newStartDate.valueOf()) return;
+
+    scrollAnchor.current = null;
+    const shift =
+      newStartDate.diff(anchor, getCellTimeUnit(currentZoom), true) * getCellWidth(currentZoom);
+    scroller.scrollLeft -= Math.round(shift);
+  }, []);
+
+  // children (header canvas) apply it before drawing, this is the fallback when none did
+  const startTime = startDate.valueOf();
+  useLayoutEffect(() => {
+    applyScrollAnchor();
+  }, [applyScrollAnchor, startTime]);
 
   const updateTilesCoords = (coords: Coords[]) => {
     setTilesCoords(coords);
@@ -121,23 +143,22 @@ const CalendarProvider = ({
           offset = Math.ceil(cols / hoursInDay);
           break;
       }
-      const load = debounce(() => {
-        switch (direction) {
-          case "back":
-            setDate((prev) => prev.subtract(offset, "days"));
-            break;
-          case "forward":
-            setDate((prev) => prev.add(offset, "days"));
-            break;
-          case "middle":
-            setDate(dayjs());
-            break;
-        }
-        onRangeChange?.(range);
-      }, 300);
-      load();
+      switch (direction) {
+        case "back":
+          scrollAnchor.current = currentStart.current.startDate.toDate();
+          setDate((prev) => prev.subtract(offset, "days"));
+          break;
+        case "forward":
+          scrollAnchor.current = currentStart.current.startDate.toDate();
+          setDate((prev) => prev.add(offset, "days"));
+          break;
+        case "middle":
+          scrollAnchor.current = null;
+          setDate(dayjs());
+          break;
+      }
     },
-    [onRangeChange, range, zoom]
+    [zoom]
   );
 
   useEffect(() => {
@@ -188,10 +209,7 @@ const CalendarProvider = ({
     if (isLoading) return;
 
     loadMore("forward");
-    debounce(() => {
-      moveHorizontalScroll("forward");
-    }, 300)();
-  }, [isLoading, loadMore, moveHorizontalScroll]);
+  }, [isLoading, loadMore]);
 
   const handleGoPrev = () => {
     if (isLoading) return;
@@ -206,10 +224,7 @@ const CalendarProvider = ({
   const handleScrollPrev = useCallback(() => {
     if (!isInitialized || isLoading) return;
     loadMore("back");
-    debounce(() => {
-      moveHorizontalScroll("back");
-    }, 300)();
-  }, [isInitialized, isLoading, loadMore, moveHorizontalScroll]);
+  }, [isInitialized, isLoading, loadMore]);
 
   const handleGoToday = useCallback(() => {
     if (isLoading) return;
@@ -259,6 +274,7 @@ const CalendarProvider = ({
         handleFilterData,
         tilesCoords,
         updateTilesCoords,
+        applyScrollAnchor,
         navigation,
         recordsThreshold: maxRecordsPerPage,
         onClearFilterData

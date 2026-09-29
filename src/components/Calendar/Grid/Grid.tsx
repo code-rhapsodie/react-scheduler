@@ -1,8 +1,17 @@
 import dayjs from "dayjs";
-import { DragEvent, JSX, MouseEvent, useCallback, useEffect, useRef, useState } from "react";
+import {
+  DragEvent,
+  JSX,
+  MouseEvent,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState
+} from "react";
 import { useTheme } from "styled-components";
 import { drawGrid } from "@/utils/drawGrid/drawGrid";
-import { boxHeight, canvasWrapperId, outsideWrapperId } from "@/constants";
+import { boxHeight, canvasWrapperId, outsideWrapperId, screenWidthMultiplier } from "@/constants";
 import { getLeftColumnWidth } from "@/utils/getLeftColumnWidth";
 import { Loader, Tile, Tiles } from "@/components";
 import { TileDragStart } from "@/components/Tiles/types";
@@ -33,6 +42,10 @@ type DragSelection = {
   anchorDate: Date;
   currentDate: Date;
 };
+
+// load the next columns a bit before reaching the edge so a fling never hits the end of the grid;
+// kept under half the visible width so the compensated position does not trigger the opposite edge
+const getLoadAheadMargin = (): number => Math.round(getCanvasWidth() / screenWidthMultiplier / 4);
 
 export function Grid({
   zoom,
@@ -260,7 +273,8 @@ export function Grid({
     [cols, startDate, rows, zoom, theme, rowsPerPersonKey]
   );
 
-  useEffect(() => {
+  // layout effect: redraw before paint so the grid never shows the previous dates once scrolled
+  useLayoutEffect(() => {
     const wrapper = wrapperRef.current;
     const canvas = canvasRef.current;
     if (!wrapper || !canvas) return;
@@ -291,7 +305,10 @@ export function Grid({
     if (!refRight.current) return;
     const observerRight = new IntersectionObserver(
       (e) => (e[0].isIntersecting ? handleScrollNext() : null),
-      { root: document.getElementById(outsideWrapperId) }
+      {
+        root: document.getElementById(outsideWrapperId),
+        rootMargin: `0px ${getLoadAheadMargin()}px 0px 0px`
+      }
     );
     observerRight.observe(refRight.current);
 
@@ -304,7 +321,7 @@ export function Grid({
       (e) => (e[0].isIntersecting ? handleScrollPrev() : null),
       {
         root: document.getElementById(outsideWrapperId),
-        rootMargin: `0px 0px 0px -${getLeftColumnWidth()}px`
+        rootMargin: `0px 0px 0px ${getLoadAheadMargin() - getLeftColumnWidth()}px`
       }
     );
     observerLeft.observe(refLeft.current);

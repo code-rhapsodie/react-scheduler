@@ -395,6 +395,8 @@ All these types (`CellClickData`, `CellRangeSelectData`, `SelectedRange`, `TileM
 
 Moving to the previous or next period with the top bar buttons now plays a short slide animation on the grid, in the direction of the navigation.
 
+Scrolling horizontally loads the previous or next period shortly before reaching the edge of the grid, and keeps the visible dates in place while the new columns are added, so the scroll stays continuous. `onRangeChange` is called with the new range, and further loads wait until `isLoading` is back to `false`.
+
 ### Mobile layout
 
 Below 768px wide, the scheduler switches to a compact layout: narrower day columns and left column, avatars hidden, the search field collapsed into a button, and the previous / next buttons, zoom selector and theme toggle hidden from the top bar. The rows can still be scrolled horizontally.

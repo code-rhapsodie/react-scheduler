@@ -6,6 +6,9 @@ import { visualizer } from "rollup-plugin-visualizer";
 import svgr from "vite-plugin-svgr";
 
 export default defineConfig({
+  // Relative base: the font urls in dist/index.css (served from ./public/fonts) must resolve
+  // next to the stylesheet, wherever the consumer's bundler or server puts it
+  base: "./",
   resolve: {
     // Native Vite 8 tsconfig path resolution (complements or replaces manual alias)
     tsconfigPaths: true,
@@ -23,6 +26,7 @@ export default defineConfig({
     })
   ],
   build: {
+    assetsDir: "",
     lib: {
       entry: resolve(import.meta.dirname, "src/index.ts"),
       name: "react-scheduler",

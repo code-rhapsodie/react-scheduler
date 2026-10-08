@@ -1,3 +1,7 @@
+# Unreleased
+
+- the bundled Inter font files are no longer inlined as base64 in `dist/index.css` (about 178 kB, most of it font data): they are now shipped as regular files in `dist/fonts/` and referenced with relative urls, so bundlers emit them as separate cacheable assets and browsers only download the subsets they need (latin-ext is rarely requested). The stylesheet itself shrinks to under 1 kB. No consumer change is needed with a bundler that resolves `url()` in CSS (webpack `css-loader`, Vite, ...); if you copy `dist/index.css` by hand, copy `dist/fonts/` next to it
+
 # Release v0.6.3
 
 - fixed the grid jumping after a strong swipe: the previous / next period is now loaded once the scroll, including swipe momentum, has settled
